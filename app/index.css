@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* Tells Tailwind v4 to trigger dark mode via the .dark class instead of OS settings */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==========================================
+   1. LIGHT MODE VARIABLES (Default)
+   ========================================== */
+:root {
+  /* Base page colors */
+  --background: #e8ebf4;
+  --foreground: #1a1f2e;
+
+  /* Cards, modals, and dropdowns */
+  --card: #ffffff;
+  --card-foreground: #1a1f2e;
+
+  /* Primary brand color (Buttons, links, active states) */
+  --primary: #4f5bce;
+  --primary-foreground: #eff1f8;
+
+  /* Subtle UI elements (Secondary text, disabled states, subtle backgrounds) */
+  --muted: #f8f9fc;
+  --muted-foreground: #404762;
+
+  /* Form elements and dividers */
+  --border: #c8cde2;
+  --input: #c8cde2;
+  --ring: #8f99ed; /* Focus outline color */
+
+  /* Status: Success (Green) */
+  --success: #459a73;
+  --success-foreground: #ffffff;
+  --success-background: #e8f5ed;
+
+  /* Status: Warning (Yellow) */
+  --warning: #ecd05c;
+  --warning-foreground: #1a1f2e; /* Dark text for readability on yellow */
+  --warning-background: #fff8df;
+
+  /* Status: Destructive/Error (Red) */
+  --destructive: #dd4243;
+  --destructive-foreground: #eff1f8;
+  --destructive-background: #fceaea;
+}
+
+/* ==========================================
+   2. DARK MODE VARIABLES
+   ========================================== */
+.dark {
+  /* Inverted base page colors */
+  --background: #1a1f2e;
+  --foreground: #eff1f8;
+
+  /* Inverted card colors */
+  --card: #2d3348;
+  --card-foreground: #eff1f8;
+
+  /* Primary brand (slightly lighter for dark mode contrast) */
+  --primary: #6975de;
+  --primary-foreground: #eff1f8;
+
+  /* Inverted subtle UI elements */
+  --muted: #2d3348;
+  --muted-foreground: #a1a8c0;
+
+  /* Inverted borders and inputs */
+  --border: #404762;
+  --input: #404762;
+  --ring: #8f99ed;
+
+  /* Status colors (Backgrounds darkened for contrast, text stays bright) */
+  --success: #459a73;
+  --success-foreground: #ffffff;
+  --success-background: #1a2e22;
+
+  --warning: #ecd05c;
+  --warning-foreground: #1a1f2e;
+  --warning-background: #2e2617;
+
+  --destructive: #dd4243;
+  --destructive-foreground: #eff1f8;
+  --destructive-background: #2e1a1a;
+}
+
+/* ==========================================
+   3. TAILWIND V4 THEME MAPPING
+   ========================================== */
+@theme {
+  /* Maps CSS variables to Tailwind utility classes (e.g., bg-background) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Maps status colors to Tailwind utilities (e.g., bg-success, text-destructive) */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+}
+
+/* ==========================================
+   4. BASE STYLES
+   ========================================== */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Smooth transition when toggling themes */
+  @apply transition-colors duration-200;
+}
