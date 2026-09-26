@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 export const metadata: Metadata = {
   title: "Connct Dev",
   description: "A platform for developers",
+  icons: {
+    icon: "/images/logo.svg",
+  },
 };
 
 export default function RootLayout({
