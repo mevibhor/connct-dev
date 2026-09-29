@@ -6,25 +6,25 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center pt-12 sm:pt-20 bg-background p-4 sm:p-6">
+    <div className="flex min-h-screen flex-col items-center bg-background p-4 pt-12 sm:p-6 sm:pt-20">
       {/* Header / Logo Area */}
       <div className="mb-8 flex items-center gap-3">
         {/* Using the SVG from public folder */}
         <Image
-          src="/images/logo.svg"
+          src="/favicon.svg"
           alt="Connct Dev Logo"
           width={32}
           height={32}
           className="h-8 w-8 object-contain"
           priority
         />
-        <span className="text-xl font-bold text-foreground tracking-tight">
+        <span className="text-xl font-bold tracking-tight text-foreground">
           Connct Dev
         </span>
       </div>
 
       {/* Main Content Area (The Card) */}
-      <div className="w-full max-w-md mx-auto">{children}</div>
+      <div className="mx-auto w-full max-w-md">{children}</div>
     </div>
   );
 }
