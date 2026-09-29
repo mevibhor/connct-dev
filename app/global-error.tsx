@@ -20,28 +20,28 @@ export default function GlobalErrorPage({ reset }: GlobalErrorPageProps) {
   };
 
   return (
-    <main className="min-h-screen w-full flex flex-col items-center justify-center bg-primary/10 px-4">
-      <section className="my-10 mx-auto text-center text-destructive/10 flex flex-col items-center">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-primary/10 px-4">
+      <section className="mx-auto my-10 flex flex-col items-center text-center text-destructive/10">
         <div className="m-10 animate-[animateIcon_5s_infinite_ease-in-out]">
-          <Unlink className="w-8.5 h-8.5 stroke-[2.2] text-destructive" />
+          <Unlink className="h-8.5 w-8.5 stroke-[2.2] text-destructive" />
         </div>
 
-        <h1 className="text-xl md:text-2xl font-bold tracking-tight mb-1 text-destructive">
+        <h1 className="mb-1 text-xl font-bold tracking-tight text-destructive md:text-2xl">
           Whoops! An error occurred
         </h1>
-        <p className="text-[14px] opacity-90 max-w-sm text-destructive">
+        <p className="max-w-sm text-[14px] text-destructive opacity-90">
           Something went Wrong. Try Again
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button
-            className="inline-flex border border-destructive bg-background/10 text-destructive hover:bg-destructive/10 cursor-pointer font-medium rounded-lg text-sm w-fit h-10 text-center items-center justify-center"
+            className="inline-flex h-10 w-fit cursor-pointer items-center justify-center rounded-lg border border-destructive bg-background/10 text-center text-sm font-medium text-destructive hover:bg-destructive/10"
             onClick={handleRefresh}
           >
             <RotateCw className="animate-spin" />
           </Button>
           {/* Homepage Button */}
-          <Button className="inline-flex border border-destructive hover:bg-destructive/10 text-destructive cursor-pointer font-medium rounded-lg text-sm w-fit h-10 text-center bg-background/10">
+          <Button className="inline-flex h-10 w-fit cursor-pointer rounded-lg border border-destructive bg-background/10 text-center text-sm font-medium text-destructive hover:bg-destructive/10">
             <Link href="/" replace={true}>
               <Home />
             </Link>
