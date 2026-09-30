@@ -6,7 +6,11 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  name: z.string().min(5, "Name must be at least 5 characters"),
+  profession: z
+    .string()
+    .min(5, "Profession is required")
+    .max(50, "Max 50 characters"), // New field
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   terms: z.boolean().refine((val) => val === true, {
