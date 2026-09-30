@@ -5,12 +5,7 @@ import { usePathname } from "next/navigation";
 import { Home, Search, User, Bell, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-
-const navItems = [
-  { label: "Feed", href: "/feed", icon: Home },
-  { label: "Search", href: "/search", icon: Search },
-  { label: "Profile", href: "/profile/1", icon: User },
-];
+import { useAuthStore } from "@/stores/use-auth-store";
 
 const comingSoonItems = [
   { label: "Notifications", icon: Bell },
@@ -20,6 +15,17 @@ const comingSoonItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const { toast } = useToast();
+  const currentUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  const profileHref =
+    isAuthenticated && currentUser ? `/profile/${currentUser.id}` : "/login";
+
+  const navItems = [
+    { label: "Feed", href: "/feed", icon: Home },
+    { label: "Search", href: "/search", icon: Search },
+    { label: "Profile", href: profileHref, icon: User },
+  ];
 
   const handleComingSoon = (label: string) => {
     toast({

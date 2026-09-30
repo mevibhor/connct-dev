@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"; // ✅ Add useState
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/card";
 import { mockUsers, Project } from "@/lib/mock-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-import { CollaborationRequestModal } from "@/components/shared/collab-request-modal"; // ✅ Import Modal
+import { CollaborationRequestModal } from "@/components/shared/collab-request-modal";
 import { Bookmark, MessageCircle, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/use-auth-store";
+import { toast } from "@/hooks/use-toast";
 
 interface ProjectCardProps {
   project: Project;
@@ -23,16 +25,22 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   const author = mockUsers.find((u) => u.id === project.authorId);
   const { bookmarkedIds, toggleBookmark } = useBookmarks();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!author) return null;
   const isBookmarked = bookmarkedIds.includes(project.id);
 
+  const handleGuestClick = (action: string) => {
+    if (!isAuthenticated) {
+      toast({ title: `Please login to ${action.toLowerCase()}`, type: "info" });
+    }
+  };
+
   return (
     <>
       <Card className="border-border bg-card shadow-sm">
-        {/* ... (Keep CardHeader and CardContent exactly as they were) ... */}
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-border">
@@ -89,12 +97,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t border-border pt-3 text-muted-foreground">
-          {/* ✅ THE INQUIRE BUTTON NOW OPENS THE MODAL */}
           <Button
             variant="ghost"
             size="sm"
             className="gap-2 text-muted-foreground hover:text-foreground"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              handleGuestClick("collaborate");
+              if (isAuthenticated) setIsModalOpen(true);
+            }}
           >
             <MessageCircle className="h-4 w-4" />
             Inquire
@@ -109,7 +119,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 ? "text-primary hover:text-primary"
                 : "text-muted-foreground hover:text-foreground",
             )}
-            onClick={() => toggleBookmark(project.id)}
+            onClick={() => {
+              handleGuestClick("bookmark");
+              if (isAuthenticated) toggleBookmark(project.id);
+            }}
           >
             <Bookmark
               className={cn("h-4 w-4", isBookmarked && "fill-current")}
@@ -123,7 +136,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </CardFooter>
       </Card>
 
-      {/* ✅ RENDER THE MODAL */}
       <CollaborationRequestModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
