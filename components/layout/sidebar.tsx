@@ -4,13 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, User, Bell, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast"; // Shadcn toast hook
-import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
   { label: "Feed", href: "/feed", icon: Home },
   { label: "Search", href: "/search", icon: Search },
-  { label: "Profile", href: "/profile/1", icon: User }, // Mock ID for now
+  { label: "Profile", href: "/profile/1", icon: User },
 ];
 
 const comingSoonItems = [
@@ -22,9 +21,9 @@ export function Sidebar() {
   const pathname = usePathname();
   const { toast } = useToast();
 
-  const handleComingSoon = () => {
+  const handleComingSoon = (label: string) => {
     toast({
-      title: "Feature coming soon",
+      title: `${label} coming soon`,
       type: "info",
     });
   };
@@ -34,7 +33,7 @@ export function Sidebar() {
       {/* Logo Area */}
       <div className="flex items-center gap-2 px-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-          <Image src="" alt="C" />
+          C
         </div>
         <span className="text-xl font-bold text-foreground">Connct Dev</span>
       </div>
@@ -65,7 +64,7 @@ export function Sidebar() {
           return (
             <button
               key={item.label}
-              onClick={() => handleComingSoon()}
+              onClick={() => handleComingSoon(item.label)}
               className="flex w-full items-center gap-4 rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
             >
               <Icon className="h-5 w-5" />
