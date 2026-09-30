@@ -23,7 +23,9 @@ export default function DashboardLayout({
           - Takes up all remaining space (flex-1)
           - min-w-0 prevents flexbox overflow issues
       */}
-      <main className="min-w-0 flex-1 border-r border-border">{children}</main>
+      <main className="min-w-0 flex-1 border-r border-border pb-20 md:pb-0">
+        {children}
+      </main>
 
       {/* RIGHT PANEL 
           - Hidden on mobile and tablet (default)
