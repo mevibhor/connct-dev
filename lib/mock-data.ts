@@ -16,6 +16,7 @@ export const mockUsers: User[] = [
   {
     id: "1",
     name: "Robert Fox",
+    profession: "Frontend Developer",
     email: "robert@connct.dev",
     bio: "Frontend Developer | React Specialist | Open to Work",
     techStack: ["React", "TypeScript", "Next.js"],
@@ -23,6 +24,7 @@ export const mockUsers: User[] = [
   {
     id: "2",
     name: "Bessie Cooper",
+    profession: "Digital Marketer",
     email: "bessie@connct.dev",
     bio: "Digital Marketer & Growth Hacker",
     techStack: ["SEO", "Analytics", "Content Strategy"],
@@ -30,6 +32,7 @@ export const mockUsers: User[] = [
   {
     id: "3",
     name: "Cameron Williamson",
+    profession: "Backend Engineer",
     email: "cameron@connct.dev",
     bio: "Backend Engineer building scalable APIs",
     techStack: ["Node.js", "PostgreSQL", "Docker"],
@@ -37,6 +40,7 @@ export const mockUsers: User[] = [
   {
     id: "4",
     name: "Dianne Russell",
+    profession: "Product Designer",
     email: "dianne@connct.dev",
     bio: "Product Designer focused on accessible experiences",
     techStack: ["Figma", "Design Systems", "Accessibility"],
@@ -44,6 +48,7 @@ export const mockUsers: User[] = [
   {
     id: "5",
     name: "Eleanor Pena",
+    profession: "Full-stack Developer",
     email: "eleanor@connct.dev",
     bio: "Full-stack developer and open-source contributor",
     techStack: ["Vue", "Go", "Redis"],
@@ -51,6 +56,7 @@ export const mockUsers: User[] = [
   {
     id: "6",
     name: "Floyd Miles",
+    profession: "Cloud Architect",
     email: "floyd@connct.dev",
     bio: "Cloud architect helping teams modernize infrastructure",
     techStack: ["AWS", "Terraform", "Kubernetes"],
@@ -58,6 +64,7 @@ export const mockUsers: User[] = [
   {
     id: "7",
     name: "Grace Howard",
+    profession: "Data Analyst",
     email: "grace@connct.dev",
     bio: "Data analyst turning complex datasets into useful insights",
     techStack: ["Python", "SQL", "Tableau"],
@@ -65,6 +72,7 @@ export const mockUsers: User[] = [
   {
     id: "8",
     name: "Henry Nichols",
+    profession: "iOS Developer",
     email: "henry@connct.dev",
     bio: "Mobile developer crafting smooth iOS applications",
     techStack: ["Swift", "SwiftUI", "Core Data"],
@@ -72,6 +80,7 @@ export const mockUsers: User[] = [
   {
     id: "9",
     name: "Isabella Torres",
+    profession: "UX Researcher",
     email: "isabella@connct.dev",
     bio: "UX researcher who makes products easier to use",
     techStack: ["User Research", "Prototyping", "Usability Testing"],
@@ -79,107 +88,10 @@ export const mockUsers: User[] = [
   {
     id: "10",
     name: "Jackie Flores",
+    profession: "Machine Learning Engineer",
     email: "jackie@connct.dev",
     bio: "Machine learning engineer exploring practical AI",
     techStack: ["Python", "PyTorch", "MLOps"],
-  },
-  {
-    id: "11",
-    name: "Kevin Hart",
-    email: "kevin@connct.dev",
-    bio: "QA engineer championing reliable software releases",
-    techStack: ["Playwright", "Jest", "CI/CD"],
-  },
-  {
-    id: "12",
-    name: "Lauren Murphy",
-    email: "lauren@connct.dev",
-    bio: "Content designer making technical products clear",
-    techStack: ["UX Writing", "Content Design", "Figma"],
-  },
-  {
-    id: "13",
-    name: "Marcus Lee",
-    email: "marcus@connct.dev",
-    bio: "Security engineer building safer web applications",
-    techStack: ["AppSec", "OAuth", "Threat Modeling"],
-  },
-  {
-    id: "14",
-    name: "Nina Patel",
-    email: "nina@connct.dev",
-    bio: "Platform engineer improving developer workflows",
-    techStack: ["Kubernetes", "Helm", "Prometheus"],
-  },
-  {
-    id: "15",
-    name: "Oscar Bennett",
-    email: "oscar@connct.dev",
-    bio: "Frontend engineer passionate about web performance",
-    techStack: ["Svelte", "CSS", "Web Vitals"],
-  },
-  {
-    id: "16",
-    name: "Priya Shah",
-    email: "priya@connct.dev",
-    bio: "Business analyst connecting customer needs to solutions",
-    techStack: ["Data Analysis", "Agile", "Jira"],
-  },
-  {
-    id: "17",
-    name: "Quentin Brooks",
-    email: "quentin@connct.dev",
-    bio: "Blockchain developer working on decentralized apps",
-    techStack: ["Solidity", "Ethereum", "Hardhat"],
-  },
-  {
-    id: "18",
-    name: "Rosa Martinez",
-    email: "rosa@connct.dev",
-    bio: "Technical project manager guiding cross-functional teams",
-    techStack: ["Roadmapping", "Scrum", "Notion"],
-  },
-  {
-    id: "19",
-    name: "Samuel Green",
-    email: "samuel@connct.dev",
-    bio: "Database engineer focused on dependable data platforms",
-    techStack: ["MySQL", "PostgreSQL", "Database Design"],
-  },
-  {
-    id: "20",
-    name: "Tara Wilson",
-    email: "tara@connct.dev",
-    bio: "Growth strategist helping early-stage teams find customers",
-    techStack: ["SEO", "Email Marketing", "Experimentation"],
-  },
-  {
-    id: "21",
-    name: "Umar Ahmed",
-    email: "umar@connct.dev",
-    bio: "DevOps engineer automating dependable deployments",
-    techStack: ["Linux", "Ansible", "GitHub Actions"],
-  },
-  {
-    id: "22",
-    name: "Valerie Kim",
-    email: "valerie@connct.dev",
-    bio: "Android developer creating thoughtful mobile experiences",
-    techStack: ["Kotlin", "Jetpack Compose", "Firebase"],
-  },
-  {
-    id: "23",
-    name: "Wesley Price",
-    email: "wesley@connct.dev",
-    bio: "Technical writer making developer tools approachable",
-    techStack: ["Technical Writing", "Markdown", "Docs as Code"],
-  },
-  {
-    id: "24",
-    name: "Ximena Rivera",
-    email: "ximena@connct.dev",
-    bio: "Computer vision researcher bringing images to life",
-    techStack: ["OpenCV", "Python", "TensorFlow"],
   },
 ];
 
@@ -218,6 +130,21 @@ export const mockProjects: Project[] = [
     bookmarkCount: 128,
   },
 ];
+
+// In-memory storage for bookmarks (resets on server restart, which is fine for mock)
+export let bookmarkedProjectIds: string[] = [];
+
+// Helper to toggle a bookmark ID
+export const toggleBookmark = (projectId: string) => {
+  if (bookmarkedProjectIds.includes(projectId)) {
+    bookmarkedProjectIds = bookmarkedProjectIds.filter(
+      (id) => id !== projectId,
+    );
+  } else {
+    bookmarkedProjectIds.push(projectId);
+  }
+  return bookmarkedProjectIds;
+};
 
 // Helper to simulate network delay (makes loading states visible)
 export const delay = (ms: number) =>

@@ -5,6 +5,7 @@ export interface User {
   avatar?: string;
   bio?: string;
   techStack?: string[];
+  profession?: string;
 }
 
 export interface AuthResponse {

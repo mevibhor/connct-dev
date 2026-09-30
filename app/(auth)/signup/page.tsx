@@ -122,6 +122,27 @@ export default function SignupPage() {
               )}
             </div>
 
+            {/* Profession Field */}
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Profession (e.g., Frontend Developer)"
+                {...register("profession")}
+                disabled={isLoading}
+                maxLength={50}
+                className={`h-11 w-full border-input bg-card text-foreground transition-all duration-300 ease-in-out placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring ${
+                  errors.profession
+                    ? "border-destructive focus-visible:ring-destructive"
+                    : ""
+                }`}
+              />
+              {errors.profession && (
+                <p className="text-xs text-destructive">
+                  {errors.profession.message}
+                </p>
+              )}
+            </div>
+
             {/* Password Field */}
             <div className="space-y-2">
               <Input
