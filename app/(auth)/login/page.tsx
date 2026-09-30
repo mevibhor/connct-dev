@@ -54,7 +54,7 @@ export default function LoginPage() {
         toast({ title: result.error || "Login failed", type: "error" });
       }
     } catch (error) {
-      toast({ title: "Network error. Please try again.", type: "error" });
+      toast({ title: `oops! ${error}`, type: "error" });
     } finally {
       setIsLoading(false);
     }

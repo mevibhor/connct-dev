@@ -50,7 +50,7 @@ export default function SignupPage() {
         toast({ title: result.error || "Signup failed", type: "error" });
       }
     } catch (error) {
-      toast({ title: "Network error. Please try again.", type: "error" });
+      toast({ title: `oops! ${error}`, type: "error" });
     } finally {
       setIsLoading(false);
     }

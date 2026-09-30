@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     return NextResponse.json<AuthResponse>(
-      { success: false, error: "Internal server error" },
+      { success: false, error: `oops! ${error}` },
       { status: 500 },
     );
   }
