@@ -1,18 +1,28 @@
 "use client";
 
 import { useState } from "react";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
 import { Project, User } from "@/types/models";
+
 import { ProjectCard } from "@/components/feed/project-card";
 import { EmptyState } from "@/components/shared/empty-state";
+
 import { FolderGit2, Bookmark, LogOut, Trash2, Upload } from "lucide-react";
+
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+
 import { ThemeSwitcher } from "./theme-switcher";
+
 import type { ProfileSection } from "./profile-header";
+
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileTabsProps {
@@ -29,17 +39,26 @@ export function ProfileTabs({
   activeSection,
 }: ProfileTabsProps) {
   const [profession, setProfession] = useState(user.profession || "");
+
   const [name, setName] = useState(user.name || "");
 
+  const [bio, setBio] = useState(user.bio || "");
+
   const router = useRouter();
+
   const { toast } = useToast();
+
   const logout = useAuthStore((state) => state.logout);
+
   const updateUser = useAuthStore((state) => state.updateUser);
+
   const queryClient = useQueryClient();
+
   const [isSaving, setIsSaving] = useState(false);
 
   const PROF_LIMIT = 50;
   const NAME_LIMIT = 50;
+  const BIO_LIMIT = 200;
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -47,6 +66,7 @@ export function ProfileTabs({
         title: "Name is required",
         type: "error",
       });
+
       return;
     }
 
@@ -55,6 +75,7 @@ export function ProfileTabs({
         title: "Profession is required",
         type: "error",
       });
+
       return;
     }
 
@@ -69,6 +90,7 @@ export function ProfileTabs({
         body: JSON.stringify({
           name,
           profession,
+          bio,
         }),
       });
 
@@ -78,10 +100,8 @@ export function ProfileTabs({
         throw new Error(result.error || "Failed to update profile");
       }
 
-      // Update the logged-in user's Zustand state
       updateUser(result.data);
 
-      // Refresh the profile query
       await queryClient.invalidateQueries({
         queryKey: ["profile", user.id],
       });
@@ -108,11 +128,13 @@ export function ProfileTabs({
     });
 
     logout();
+
     router.push("/login");
   };
 
   const handleLogout = () => {
     logout();
+
     router.push("/login");
   };
 
@@ -233,6 +255,7 @@ export function ProfileTabs({
 
                 <div className="space-y-7 px-5 py-6 sm:px-8 sm:py-8">
                   {/* Avatar */}
+
                   <Button
                     type="button"
                     variant="outline"
@@ -243,6 +266,7 @@ export function ProfileTabs({
                   </Button>
 
                   {/* Full name */}
+
                   <div className="space-y-2">
                     <Input
                       id="name"
@@ -262,8 +286,8 @@ export function ProfileTabs({
                     </div>
                   </div>
 
-                  {/* Username */}
                   {/* Profession */}
+
                   <div className="space-y-2">
                     <Input
                       id="profession"
@@ -283,12 +307,41 @@ export function ProfileTabs({
                     </div>
                   </div>
 
+                  {/* Bio */}
+
+                  <div className="space-y-2">
+                    <Textarea
+                      id="bio"
+                      value={bio}
+                      maxLength={BIO_LIMIT}
+                      onChange={(e) =>
+                        setBio(e.target.value.slice(0, BIO_LIMIT))
+                      }
+                      placeholder="Tell people a little about yourself, your interests, or what you're building..."
+                      rows={4}
+                      className="resize-none"
+                    />
+
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-xs text-muted-foreground">
+                        Keep it short and introduce yourself to other
+                        developers.
+                      </p>
+
+                      <span className="shrink-0 text-xs text-muted-foreground">
+                        {bio.length}/{BIO_LIMIT}
+                      </span>
+                    </div>
+                  </div>
+
                   {/* Theme */}
+
                   <div className="border-t border-border pt-7">
                     <ThemeSwitcher />
                   </div>
 
                   {/* Save */}
+
                   <div className="flex justify-end border-t border-border pt-6">
                     <Button
                       type="button"
