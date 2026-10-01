@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Connct Dev",
   description: "A platform for developers",
   icons: {
-    icon: "./favicon.svg",
+    icon: "/favicon.svg",
   },
 };
 

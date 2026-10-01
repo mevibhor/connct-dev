@@ -782,19 +782,17 @@
     },
     {
       "id": "user_4a3811de-99cb-4268-9df0-b34396e61733",
-      "name": "vibhor s sharma",
-      "email": "biz.vibhor@gmail.com",
-      "profession": "frontend web developer",
+      "name": "Test User",
+      "email": "test-user@connct.dev",
+      "profession": "frontend developer",
       "techStack": [
         "React",
         "JavaScript",
         "TypeScript",
-        "HTML",
-        "CSS",
-        "zustand",
-        "next.js",
-        "redux",
-        "tailwind css"
+        "Next.js",
+        "Tailwind CSS",
+        "HTML5",
+        "CSS3"
       ]
     }
   ],

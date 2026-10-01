@@ -67,16 +67,18 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     const profession =
       typeof body.profession === "string" ? body.profession.trim() : "";
 
-    const rawTechStack = Array.isArray(body.techStack) ? body.techStack : [];
+    const rawTechStack: unknown[] = Array.isArray(body.techStack)
+      ? body.techStack
+      : [];
 
     const techStack = rawTechStack
-      .filter((skill): skill is string => typeof skill === "string")
-      .map((skill) => skill.trim())
+      .filter((skill: unknown): skill is string => typeof skill === "string")
+      .map((skill: string) => skill.trim())
       .filter(Boolean)
       .filter(
-        (skill, index, skills) =>
+        (skill: string, index: number, skills: string[]) =>
           skills.findIndex(
-            (item) => item.toLowerCase() === skill.toLowerCase(),
+            (item: string) => item.toLowerCase() === skill.toLowerCase(),
           ) === index,
       );
 

@@ -12,7 +12,16 @@ import { Project, User } from "@/types/models";
 import { ProjectCard } from "@/components/feed/project-card";
 import { EmptyState } from "@/components/shared/empty-state";
 
-import { FolderGit2, Bookmark, LogOut, Trash2, Upload, X } from "lucide-react";
+import {
+  FolderGit2,
+  Bookmark,
+  LogOut,
+  Trash2,
+  Upload,
+  X,
+  UserRound,
+  Menu,
+} from "lucide-react";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useRouter } from "next/navigation";
@@ -279,23 +288,23 @@ export function ProfileTabs({
           <TabsList className="h-auto w-full shrink-0 justify-start rounded-lg border border-border bg-muted/30 p-1 lg:w-48 lg:flex-col lg:items-stretch">
             <TabsTrigger
               value="general"
-              className="flex-1 justify-center rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
+              className="flex-1 justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
             >
-              General
+              <Menu /> General
             </TabsTrigger>
 
             <TabsTrigger
               value="account"
-              className="flex-1 justify-center rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
+              className="flex-1 justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
             >
-              Account
+              <UserRound /> Account
             </TabsTrigger>
 
             <TabsTrigger
               value="logout"
-              className="flex-1 justify-center rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
+              className="flex-1 justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-normal text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm lg:justify-start"
             >
-              Logout
+              <LogOut /> Logout
             </TabsTrigger>
           </TabsList>
 
@@ -329,7 +338,7 @@ export function ProfileTabs({
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 w-full justify-start border-dashed font-normal text-muted-foreground hover:text-foreground sm:max-w-md"
+                    className="h-12 w-full cursor-not-allowed justify-start border-dashed font-normal text-muted-foreground hover:text-foreground sm:max-w-md"
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     Choose an image for avatar
@@ -553,8 +562,12 @@ export function ProfileTabs({
                     again to access your account.
                   </p>
 
-                  <Button type="button" onClick={handleLogout} className="mt-6">
-                    Logout
+                  <Button
+                    type="button"
+                    onClick={handleLogout}
+                    className="mt-6 p-4"
+                  >
+                    <LogOut /> Logout
                   </Button>
                 </div>
               </div>

@@ -29,7 +29,7 @@ export function FilterBar({
           placeholder="Search projects, tech stacks, or keywords..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="h-11 border-border bg-card pl-10 focus-visible:ring-ring"
+          className="h-10 border-border bg-card pl-10 focus-visible:ring-ring/10"
         />
       </div>
 
@@ -38,7 +38,7 @@ export function FilterBar({
         <Badge
           variant="outline"
           className={cn(
-            "cursor-pointer px-3 py-1 transition-colors",
+            "cursor-pointer px-3 py-3 transition-colors",
             !stage
               ? "border-primary bg-primary text-primary-foreground"
               : "border-border bg-card text-muted-foreground hover:bg-muted",
@@ -52,7 +52,7 @@ export function FilterBar({
             key={s}
             variant="outline"
             className={cn(
-              "cursor-pointer px-3 py-1 transition-colors",
+              "cursor-pointer px-3 py-3 transition-colors",
               stage === s
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-muted-foreground hover:bg-muted",

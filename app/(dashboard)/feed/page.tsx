@@ -11,6 +11,7 @@ import { FeedSkeleton } from "@/components/feed/feed-skeleton";
 import { FilterBar } from "@/components/feed/filter-bar";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SearchX } from "lucide-react";
+import Image from "next/image";
 
 function FeedContent() {
   const searchParams = useSearchParams();
@@ -55,6 +56,10 @@ function FeedContent() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
+      <div className="flex h-12 items-center justify-start gap-2 border-b border-border px-4 text-base font-semibold tracking-tight md:hidden">
+        <Image src="/favicon.svg" alt="CC" width={24} height={24} />
+        <span> Connct Dev</span>
+      </div>
       <CreateProjectBox />
 
       <FilterBar

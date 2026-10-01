@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, User, Bell, MessageSquare } from "lucide-react";
+import { Bell, Home, MessageSquare, Search, User } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/stores/use-auth-store";
@@ -15,11 +17,12 @@ const comingSoonItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const { toast } = useToast();
-  const currentUser = useAuthStore((state) => state.user);
+
+  const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const profileHref =
-    isAuthenticated && currentUser ? `/profile/${currentUser.id}` : "/login";
+    isAuthenticated && user ? `/profile/${user.id}` : "/login";
 
   const navItems = [
     { label: "Feed", href: "/feed", icon: Home },
@@ -35,50 +38,89 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-full flex-col space-y-6 p-4">
-      {/* Logo Area */}
-      <div className="flex items-center gap-2 px-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-          C
-        </div>
-        <span className="text-xl font-bold text-foreground">Connct Dev</span>
+    <aside className="flex h-full flex-col border-r border-border bg-background">
+      {/* Logo */}
+      <div className="border-b border-border px-5 py-5">
+        <Link href="/feed" className="flex items-center gap-2.5">
+          <Image src="/favicon.svg" alt="Connct.dev" width={28} height={28} />
+
+          <span className="text-lg font-semibold tracking-tight text-foreground">
+            Connct Dev
+          </span>
+        </Link>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="flex flex-col gap-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-4 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-                isActive ? "bg-muted text-primary" : "text-muted-foreground",
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              {item.label}
-            </Link>
-          );
-        })}
+      {/* Navigation */}
+      <div className="flex-1 px-3 py-5">
+        <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          Navigation
+        </p>
 
-        {/* "Coming Soon" Items */}
-        {comingSoonItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.label}
-              onClick={() => handleComingSoon(item.label)}
-              className="flex w-full items-center gap-4 rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-            >
-              <Icon className="h-5 w-5" />
-              {item.label}
-            </button>
-          );
-        })}
-      </nav>
-    </div>
+        <nav className="space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "border-border bg-muted text-foreground"
+                    : "border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-md",
+                    isActive
+                      ? "bg-background text-primary"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  <Icon className="h-4.5 w-4.5" />
+                </span>
+
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* More */}
+        <div className="mt-7">
+          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+            More
+          </p>
+
+          <div className="space-y-1">
+            {comingSoonItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => handleComingSoon(item.label)}
+                  className="flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-muted/60 hover:text-foreground"
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md">
+                    <Icon className="h-4.5 w-4.5" />
+                  </span>
+
+                  <span>{item.label}</span>
+
+                  <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    Soon
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 }

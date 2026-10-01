@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
       name: name.trim(),
       email: normalizedEmail,
       profession: profession.trim(),
-      bio: "",
       techStack: [],
     };
 
