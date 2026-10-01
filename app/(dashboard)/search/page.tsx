@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -21,6 +21,8 @@ function SearchContent() {
 
   const router = useRouter();
 
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
   const initialSearch = searchParams.get("search") || "";
 
   const initialTech = searchParams.get("tech") || "";
@@ -29,18 +31,23 @@ function SearchContent() {
 
   const [techInput, setTechInput] = useState(initialTech);
 
-  const debouncedSearch = useDebounce(searchInput, 300);
+  const debouncedSearch = useDebounce(searchInput, 500);
 
-  const debouncedTech = useDebounce(techInput, 300);
+  const debouncedTech = useDebounce(techInput, 500);
 
   const {
-    data: developers = [],
+    data,
     isLoading,
     isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useDevelopers({
     search: debouncedSearch,
     tech: debouncedTech,
   });
+
+  const developers = data?.pages.flatMap((page) => page.data) || [];
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -59,6 +66,33 @@ function SearchContent() {
       scroll: false,
     });
   }, [debouncedSearch, debouncedTech, router]);
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+
+    if (!element || !hasNextPage) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+
+        if (firstEntry.isIntersecting && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "200px",
+      },
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
@@ -117,6 +151,7 @@ function SearchContent() {
         {/* Results */}
         {!isError && (
           <div className="grid grid-cols-1 gap-4">
+            {/* Initial loading */}
             {isLoading &&
               [1, 2, 3, 4, 5, 6].map((item) => (
                 <div
@@ -125,12 +160,23 @@ function SearchContent() {
                 />
               ))}
 
+            {/* Developers */}
             {!isLoading &&
               developers.length > 0 &&
               developers.map((user) => (
                 <DeveloperCard key={user.id} user={user} />
               ))}
 
+            {/* Loading next batch */}
+            {isFetchingNextPage &&
+              [1, 2, 3].map((item) => (
+                <div
+                  key={`loading-${item}`}
+                  className="h-40 animate-pulse rounded-xl border border-border bg-card"
+                />
+              ))}
+
+            {/* Empty state */}
             {!isLoading && developers.length === 0 && (
               <div className="col-span-full">
                 <EmptyState
@@ -138,6 +184,15 @@ function SearchContent() {
                   description="Try adjusting your search or tech filter."
                 />
               </div>
+            )}
+
+            {/* Infinite scroll trigger */}
+            {hasNextPage && (
+              <div
+                ref={loadMoreRef}
+                className="h-1 w-full"
+                aria-hidden="true"
+              />
             )}
           </div>
         )}

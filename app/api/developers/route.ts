@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
 
     const tech = searchParams.get("tech")?.trim().toLowerCase() || "";
 
+    const page = Math.max(Number(searchParams.get("page")) || 1, 1);
+
+    const limit = 10;
+
     let developers = db.users;
 
     /*
@@ -44,18 +48,45 @@ export async function GET(request: NextRequest) {
     }
 
     /*
+     * Calculate project counts once.
+     */
+    const projectCounts = new Map<string, number>();
+
+    for (const project of db.projects) {
+      const count = projectCounts.get(project.authorId) || 0;
+
+      projectCounts.set(project.authorId, count + 1);
+    }
+
+    /*
      * Add project count for each developer.
      */
-    const data = developers.map((user) => ({
+    const developersWithProjectCount = developers.map((user) => ({
       ...user,
-      projectCount: db.projects.filter(
-        (project) => project.authorId === user.id,
-      ).length,
+      projectCount: projectCounts.get(user.id) || 0,
     }));
+
+    /*
+     * Pagination
+     */
+    const startIndex = (page - 1) * limit;
+
+    const paginatedDevelopers = developersWithProjectCount.slice(
+      startIndex,
+      startIndex + limit,
+    );
+
+    const hasMore = startIndex + limit < developersWithProjectCount.length;
 
     return NextResponse.json({
       success: true,
-      data,
+      data: paginatedDevelopers,
+      pagination: {
+        page,
+        limit,
+        hasMore,
+        total: developersWithProjectCount.length,
+      },
     });
   } catch (error) {
     console.error("Get developers error:", error);

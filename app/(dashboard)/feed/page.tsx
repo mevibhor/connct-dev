@@ -23,7 +23,7 @@ function FeedContent() {
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [stage, setStage] = useState(initialStage);
 
-  const debouncedSearch = useDebounce(searchInput, 300);
+  const debouncedSearch = useDebounce(searchInput, 500);
 
   const { data, isLoading, isError } = useProjects({
     search: debouncedSearch,
