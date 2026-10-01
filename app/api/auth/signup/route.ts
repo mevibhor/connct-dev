@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, profession, password } = body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !profession || !password) {
       return NextResponse.json<AuthResponse>(
         { success: false, error: "All fields are required" },
         { status: 400 },
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const existingUser = mockUsers.find((u) => u.email === email);
+
     if (existingUser) {
       return NextResponse.json<AuthResponse>(
         { success: false, error: "User with this email already exists" },
@@ -28,6 +29,8 @@ export async function POST(request: NextRequest) {
       id: Date.now().toString(),
       name,
       email,
+      profession,
+      bio: "",
       techStack: [],
     };
 

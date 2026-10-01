@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Project, User } from "@/types/models";
 import { ProjectCard } from "@/components/feed/project-card";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -14,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeSwitcher } from "./theme-switcher";
 import type { ProfileSection } from "./profile-header";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileTabsProps {
   user: User;
@@ -28,23 +28,77 @@ export function ProfileTabs({
   bookmarkedProjects,
   activeSection,
 }: ProfileTabsProps) {
-  const [bio, setBio] = useState(user.bio || "");
   const [profession, setProfession] = useState(user.profession || "");
   const [name, setName] = useState(user.name || "");
 
   const router = useRouter();
   const { toast } = useToast();
   const logout = useAuthStore((state) => state.logout);
+  const updateUser = useAuthStore((state) => state.updateUser);
+  const queryClient = useQueryClient();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const BIO_LIMIT = 160;
   const PROF_LIMIT = 50;
   const NAME_LIMIT = 50;
 
-  const handleSave = () => {
-    toast({
-      title: "Profile updated successfully!",
-      type: "success",
-    });
+  const handleSave = async () => {
+    if (!name.trim()) {
+      toast({
+        title: "Name is required",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!profession.trim()) {
+      toast({
+        title: "Profession is required",
+        type: "error",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch(`/api/profile/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          profession,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to update profile");
+      }
+
+      // Update the logged-in user's Zustand state
+      updateUser(result.data);
+
+      // Refresh the profile query
+      await queryClient.invalidateQueries({
+        queryKey: ["profile", user.id],
+      });
+
+      toast({
+        title: "Profile updated successfully!",
+        type: "success",
+      });
+    } catch (error) {
+      toast({
+        title:
+          error instanceof Error ? error.message : "Failed to update profile",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -209,41 +263,22 @@ export function ProfileTabs({
                   </div>
 
                   {/* Username */}
+                  {/* Profession */}
                   <div className="space-y-2">
                     <Input
-                      id="username"
+                      id="profession"
                       value={profession}
                       maxLength={PROF_LIMIT}
                       onChange={(e) =>
                         setProfession(e.target.value.slice(0, PROF_LIMIT))
                       }
-                      placeholder="Username"
+                      placeholder="Profession"
                       className="h-11"
                     />
 
                     <div className="flex justify-end">
                       <span className="text-xs text-muted-foreground">
                         {profession.length}/{PROF_LIMIT}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Bio */}
-                  <div className="space-y-2">
-                    <Textarea
-                      id="bio"
-                      value={bio}
-                      maxLength={BIO_LIMIT}
-                      onChange={(e) =>
-                        setBio(e.target.value.slice(0, BIO_LIMIT))
-                      }
-                      placeholder="Bio"
-                      className="min-h-30 resize-none"
-                    />
-
-                    <div className="flex justify-end">
-                      <span className="text-xs text-muted-foreground">
-                        {bio.length}/{BIO_LIMIT}
                       </span>
                     </div>
                   </div>
@@ -258,9 +293,10 @@ export function ProfileTabs({
                     <Button
                       type="button"
                       onClick={handleSave}
+                      disabled={isSaving}
                       className="w-full sm:w-auto"
                     >
-                      Save Changes
+                      {isSaving ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
                 </div>
