@@ -2,11 +2,6 @@
 
 /* Tells Tailwind v4 to trigger dark mode via the .dark class instead of OS settings */
 @custom-variant dark (&:where(.dark, .dark *));
-
-html {
-  scroll-behavior: smooth;
-}
-
 /* ==========================================
    1. LIGHT MODE VARIABLES (Default)
    ========================================== */

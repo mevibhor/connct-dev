@@ -32,7 +32,7 @@ export default function DashboardLayout({
           - Visible on large screens (lg:block)
           - Fixed width, sticky
       */}
-      <aside className="sticky top-0 hidden h-screen overflow-y-auto p-4 lg:block lg:w-80">
+      <aside className="sticky top-0 hidden h-screen overflow-y-auto p-4 xl:block xl:w-80">
         <RightPanel />
       </aside>
 
