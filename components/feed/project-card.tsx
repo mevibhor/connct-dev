@@ -152,6 +152,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
     }
   };
 
+  function formatProjectDate(dateString: string) {
+    const date = new Date(dateString);
+    const diffHours = Math.floor(
+      (Date.now() - date.getTime()) / (1000 * 60 * 60),
+    );
+
+    if (diffHours < 1) return "now";
+    if (diffHours < 24) return `${diffHours}h ago`;
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }
+
   return (
     <>
       <Card className="border-border bg-card shadow-sm">
@@ -279,7 +294,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </Button>
 
           <span className="text-xs text-muted-foreground">
-            {project.createdAt}
+            {formatProjectDate(project.createdAt)}{" "}
           </span>
         </CardFooter>
       </Card>
