@@ -4,7 +4,7 @@ import { readDatabase, writeDatabase, generateId } from "@/lib/db";
 
 import { Project } from "@/types/models";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export async function GET(request: NextRequest) {
   try {

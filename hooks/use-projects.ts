@@ -1,6 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { Project, User } from "@/types/models";
 
 export interface ProjectWithAuthor extends Project {
@@ -22,11 +23,11 @@ interface ProjectsResponse {
 interface UseProjectsParams {
   search?: string;
   stage?: string;
-  page?: number;
 }
 
 async function fetchProjects(
   params: UseProjectsParams,
+  page: number,
 ): Promise<ProjectsResponse> {
   const queryParams = new URLSearchParams();
 
@@ -38,9 +39,7 @@ async function fetchProjects(
     queryParams.set("stage", params.stage);
   }
 
-  if (params.page) {
-    queryParams.set("page", String(params.page));
-  }
+  queryParams.set("page", String(page));
 
   const response = await fetch(`/api/projects?${queryParams.toString()}`);
 
@@ -58,10 +57,23 @@ async function fetchProjects(
 }
 
 export function useProjects(params: UseProjectsParams = {}) {
-  return useQuery({
-    queryKey: ["projects", params.search, params.stage, params.page],
-    queryFn: () => fetchProjects(params),
+  return useInfiniteQuery({
+    queryKey: ["projects", params.search, params.stage],
+
+    queryFn: ({ pageParam }) => fetchProjects(params, pageParam),
+
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.pagination.hasMore) {
+        return undefined;
+      }
+
+      return lastPage.pagination.page + 1;
+    },
+
     staleTime: 1000 * 60 * 5,
+
     retry: 1,
   });
 }
