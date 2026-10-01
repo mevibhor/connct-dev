@@ -1,7 +1,5 @@
 import "server-only";
 
-import { promises as fs } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 
 import { Project, User } from "@/types/models";
@@ -29,45 +27,74 @@ export interface Database {
   inquiries: InquiryRecord[];
 }
 
-const DB_PATH = path.join(process.cwd(), "data", "db.json");
+const JSONBIN_API_URL = "https://api.jsonbin.io/v3/b";
+const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID;
+const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY;
 
-async function ensureDatabase() {
-  const dataDirectory = path.dirname(DB_PATH);
-
-  await fs.mkdir(dataDirectory, {
-    recursive: true,
-  });
-
-  try {
-    await fs.access(DB_PATH);
-  } catch {
-    const initialDatabase: Database = {
-      users: [],
-      projects: [],
-      bookmarks: [],
-      inquiries: [],
-    };
-
-    await fs.writeFile(
-      DB_PATH,
-      JSON.stringify(initialDatabase, null, 2),
-      "utf-8",
-    );
+function getJsonBinUrl(version = "latest") {
+  if (!JSONBIN_BIN_ID) {
+    throw new Error("JSONBIN_BIN_ID is not configured");
   }
+
+  return `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/${version}`;
+}
+
+function getHeaders(): HeadersInit {
+  if (!JSONBIN_API_KEY) {
+    throw new Error("JSONBIN_API_KEY is not configured");
+  }
+
+  return {
+    "Content-Type": "application/json",
+    "X-Master-Key": JSONBIN_API_KEY,
+  };
 }
 
 export async function readDatabase(): Promise<Database> {
-  await ensureDatabase();
+  const response = await fetch(getJsonBinUrl(), {
+    method: "GET",
+    headers: getHeaders(),
+    cache: "no-store",
+  });
 
-  const file = await fs.readFile(DB_PATH, "utf-8");
+  if (!response.ok) {
+    const errorText = await response.text();
 
-  return JSON.parse(file) as Database;
+    throw new Error(
+      `Failed to read database from JSONBin: ${response.status} ${errorText}`,
+    );
+  }
+
+  const result = (await response.json()) as {
+    record?: Database;
+  };
+
+  if (!result.record) {
+    throw new Error("JSONBin returned an invalid database response");
+  }
+
+  return result.record;
 }
 
 export async function writeDatabase(data: Database): Promise<void> {
-  await ensureDatabase();
+  if (!JSONBIN_BIN_ID) {
+    throw new Error("JSONBIN_BIN_ID is not configured");
+  }
 
-  await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  const response = await fetch(`${JSONBIN_API_URL}/${JSONBIN_BIN_ID}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(
+      `Failed to write database to JSONBin: ${response.status} ${errorText}`,
+    );
+  }
 }
 
 export function generateId(prefix: string): string {
