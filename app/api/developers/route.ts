@@ -14,31 +14,40 @@ export async function GET(request: NextRequest) {
 
     let developers = db.users;
 
+    /*
+     * Search by:
+     * - Name
+     * - Profession
+     * - Tech stack
+     */
     if (search) {
       developers = developers.filter((user) => {
         const nameMatch = user.name.toLowerCase().includes(search);
 
         const professionMatch = user.profession?.toLowerCase().includes(search);
 
-        const bioMatch = user.bio?.toLowerCase().includes(search);
-
-        const techStackMatch = user.techStack?.some((item) =>
-          item.toLowerCase().includes(search),
+        const techStackMatch = user.techStack?.some((skill) =>
+          skill.toLowerCase().includes(search),
         );
 
-        return nameMatch || professionMatch || bioMatch || techStackMatch;
+        return nameMatch || professionMatch || techStackMatch;
       });
     }
 
+    /*
+     * Filter by technology
+     */
     if (tech) {
       developers = developers.filter((user) =>
-        user.techStack?.some((item) => item.toLowerCase().includes(tech)),
+        user.techStack?.some((skill) => skill.toLowerCase().includes(tech)),
       );
     }
 
+    /*
+     * Add project count for each developer.
+     */
     const data = developers.map((user) => ({
       ...user,
-
       projectCount: db.projects.filter(
         (project) => project.authorId === user.id,
       ).length,

@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { readDatabase, writeDatabase } from "@/lib/db";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
+interface RouteContext {
+  params: Promise<{
+    userId: string;
+  }>;
+}
+
+const MIN_SKILLS = 5;
+const MAX_SKILLS = 10;
+
+export async function GET(_request: NextRequest, { params }: RouteContext) {
   try {
     const { userId } = await params;
 
@@ -23,7 +29,7 @@ export async function GET(
       );
     }
 
-    const userProjects = db.projects
+    const projects = db.projects
       .filter((project) => project.authorId === userId)
       .map((project) => ({
         ...project,
@@ -34,7 +40,7 @@ export async function GET(
       success: true,
       data: {
         user,
-        projects: userProjects,
+        projects,
       },
     });
   } catch (error) {
@@ -50,18 +56,31 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
   try {
     const { userId } = await params;
 
     const body = await request.json();
 
-    const { name, profession, bio } = body;
+    const name = typeof body.name === "string" ? body.name.trim() : "";
 
-    if (!name?.trim()) {
+    const profession =
+      typeof body.profession === "string" ? body.profession.trim() : "";
+
+    const rawTechStack = Array.isArray(body.techStack) ? body.techStack : [];
+
+    const techStack = rawTechStack
+      .filter((skill): skill is string => typeof skill === "string")
+      .map((skill) => skill.trim())
+      .filter(Boolean)
+      .filter(
+        (skill, index, skills) =>
+          skills.findIndex(
+            (item) => item.toLowerCase() === skill.toLowerCase(),
+          ) === index,
+      );
+
+    if (!name) {
       return NextResponse.json(
         {
           success: false,
@@ -71,7 +90,7 @@ export async function PUT(
       );
     }
 
-    if (!profession?.trim()) {
+    if (!profession) {
       return NextResponse.json(
         {
           success: false,
@@ -81,9 +100,29 @@ export async function PUT(
       );
     }
 
+    if (techStack.length < MIN_SKILLS) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Please add at least ${MIN_SKILLS} skills`,
+        },
+        { status: 400 },
+      );
+    }
+
+    if (techStack.length > MAX_SKILLS) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `You can add a maximum of ${MAX_SKILLS} skills`,
+        },
+        { status: 400 },
+      );
+    }
+
     const db = await readDatabase();
 
-    const userIndex = db.users.findIndex((user) => user.id === userId);
+    const userIndex = db.users.findIndex((item) => item.id === userId);
 
     if (userIndex === -1) {
       return NextResponse.json(
@@ -95,20 +134,18 @@ export async function PUT(
       );
     }
 
-    const updatedUser = {
+    db.users[userIndex] = {
       ...db.users[userIndex],
-      name: name.trim(),
-      profession: profession.trim(),
-      bio: bio?.trim() || "",
+      name,
+      profession,
+      techStack,
     };
-
-    db.users[userIndex] = updatedUser;
 
     await writeDatabase(db);
 
     return NextResponse.json({
       success: true,
-      data: updatedUser,
+      data: db.users[userIndex],
     });
   } catch (error) {
     console.error("Update profile error:", error);

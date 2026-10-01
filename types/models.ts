@@ -3,7 +3,6 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  bio?: string;
   techStack?: string[];
   profession?: string;
 }

@@ -5,11 +5,12 @@
       "name": "Robert Fox",
       "email": "robert.fox@connct.dev",
       "profession": "React web and Native App developer",
-      "bio": "",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "Node.js",
+        "Tailwind"
       ]
     },
     {
@@ -17,11 +18,12 @@
       "name": "Bessie Cooper",
       "email": "bessie.cooper@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "MongoDB",
+        "REST APIs"
       ]
     },
     {
@@ -29,11 +31,12 @@
       "name": "Cameron Williamson",
       "email": "cameron.williamson@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
         "Vue",
         "Nuxt",
-        "Tailwind"
+        "Tailwind",
+        "TypeScript",
+        "Node.js"
       ]
     },
     {
@@ -41,11 +44,12 @@
       "name": "Dianne Russell",
       "email": "dianne.russell@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
         "React Native",
         "Expo",
-        "Firebase"
+        "Firebase",
+        "Figma",
+        "Design Systems"
       ]
     },
     {
@@ -53,11 +57,12 @@
       "name": "Eleanor Pena",
       "email": "eleanor.pena@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "User Research",
+        "Wireframing",
+        "Prototyping",
+        "Accessibility"
       ]
     },
     {
@@ -65,11 +70,12 @@
       "name": "Floyd Miles",
       "email": "floyd.miles@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Flutter",
+        "Firebase",
+        "TypeScript"
       ]
     },
     {
@@ -77,11 +83,12 @@
       "name": "Grace Howard",
       "email": "grace.howard@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Terraform",
+        "CI/CD"
       ]
     },
     {
@@ -89,11 +96,12 @@
       "name": "Henry Nichols",
       "email": "henry.nichols@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Tableau",
+        "Power BI",
+        "Pandas"
       ]
     },
     {
@@ -101,11 +109,12 @@
       "name": "Isabella Torres",
       "email": "isabella.torres@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "TensorFlow",
+        "MLflow",
+        "Scikit-learn"
       ]
     },
     {
@@ -113,11 +122,12 @@
       "name": "Jackie Flores",
       "email": "jackie.flores@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "GCP",
+        "Terraform",
+        "Kubernetes"
       ]
     },
     {
@@ -125,11 +135,12 @@
       "name": "Brooklyn Simmons",
       "email": "brooklyn.simmons@connct.dev",
       "profession": "Frontend Developer",
-      "bio": "Frontend Developer building useful products and exploring new ideas.",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "Tailwind",
+        "Testing Library"
       ]
     },
     {
@@ -137,11 +148,12 @@
       "name": "Courtney Henry",
       "email": "courtney.henry@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "Redis",
+        "GraphQL"
       ]
     },
     {
@@ -149,11 +161,12 @@
       "name": "Jerome Bell",
       "email": "jerome.bell@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
         "Vue",
         "Nuxt",
-        "Tailwind"
+        "Tailwind",
+        "JavaScript",
+        "Pinia"
       ]
     },
     {
@@ -161,11 +174,12 @@
       "name": "Jenny Wilson",
       "email": "jenny.wilson@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
-        "React Native",
-        "Expo",
-        "Firebase"
+        "Figma",
+        "Design Systems",
+        "User Research",
+        "Prototyping",
+        "Accessibility"
       ]
     },
     {
@@ -173,11 +187,12 @@
       "name": "Kristin Watson",
       "email": "kristin.watson@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "Adobe XD",
+        "Wireframing",
+        "User Flows",
+        "Prototyping"
       ]
     },
     {
@@ -185,11 +200,12 @@
       "name": "Leslie Alexander",
       "email": "leslie.alexander@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Firebase",
+        "Swift",
+        "Kotlin"
       ]
     },
     {
@@ -197,11 +213,12 @@
       "name": "Marvin McKinney",
       "email": "marvin.mckinney@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Linux",
+        "Monitoring"
       ]
     },
     {
@@ -209,11 +226,12 @@
       "name": "Savannah Nguyen",
       "email": "savannah.nguyen@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Pandas",
+        "Looker",
+        "Excel"
       ]
     },
     {
@@ -221,11 +239,12 @@
       "name": "Wade Warren",
       "email": "wade.warren@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "TensorFlow",
+        "NLP",
+        "MLOps"
       ]
     },
     {
@@ -233,11 +252,12 @@
       "name": "Darrell Steward",
       "email": "darrell.steward@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "GCP",
+        "Terraform",
+        "Architecture"
       ]
     },
     {
@@ -245,11 +265,12 @@
       "name": "Annette Black",
       "email": "annette.black@connct.dev",
       "profession": "Frontend Developer",
-      "bio": "Frontend Developer building useful products and exploring new ideas.",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "Redux",
+        "Storybook"
       ]
     },
     {
@@ -257,11 +278,12 @@
       "name": "Arlene McCoy",
       "email": "arlene.mccoy@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "MongoDB",
+        "TypeScript"
       ]
     },
     {
@@ -269,11 +291,12 @@
       "name": "Devon Lane",
       "email": "devon.lane@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
         "Vue",
         "Nuxt",
-        "Tailwind"
+        "Tailwind",
+        "Node.js",
+        "Cypress"
       ]
     },
     {
@@ -281,11 +304,12 @@
       "name": "Esther Howard",
       "email": "esther.howard@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
-        "React Native",
-        "Expo",
-        "Firebase"
+        "Figma",
+        "Design Systems",
+        "User Research",
+        "Wireframing",
+        "Prototyping"
       ]
     },
     {
@@ -293,11 +317,12 @@
       "name": "Guy Hawkins",
       "email": "guy.hawkins@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "Interaction Design",
+        "User Testing",
+        "Illustration",
+        "Accessibility"
       ]
     },
     {
@@ -305,11 +330,12 @@
       "name": "Jacob Jones",
       "email": "jacob.jones@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Firebase",
+        "iOS",
+        "Android"
       ]
     },
     {
@@ -317,11 +343,12 @@
       "name": "Kathryn Murphy",
       "email": "kathryn.murphy@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Terraform",
+        "GitHub Actions"
       ]
     },
     {
@@ -329,11 +356,12 @@
       "name": "Kristin Watson",
       "email": "kristin.watson@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Tableau",
+        "Power BI",
+        "Statistics"
       ]
     },
     {
@@ -341,11 +369,12 @@
       "name": "Marvin McKinney",
       "email": "marvin.mckinney@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "Numpy",
+        "Pandas",
+        "Model Deployment"
       ]
     },
     {
@@ -353,11 +382,12 @@
       "name": "Ralph Edwards",
       "email": "ralph.edwards@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "Kubernetes",
+        "Terraform",
+        "System Design"
       ]
     },
     {
@@ -365,11 +395,12 @@
       "name": "Ronald Richards",
       "email": "ronald.richards@connct.dev",
       "profession": "Frontend Developer",
-      "bio": "Frontend Developer building useful products and exploring new ideas.",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "Tailwind",
+        "JavaScript"
       ]
     },
     {
@@ -377,11 +408,12 @@
       "name": "Theresa Webb",
       "email": "theresa.webb@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "MongoDB",
+        "API Design"
       ]
     },
     {
@@ -389,11 +421,12 @@
       "name": "Warren Blake",
       "email": "warren.blake@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
         "Vue",
         "Nuxt",
-        "Tailwind"
+        "Tailwind",
+        "TypeScript",
+        "Prisma"
       ]
     },
     {
@@ -401,11 +434,12 @@
       "name": "Courtney Henry",
       "email": "courtney.henry@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
-        "React Native",
-        "Expo",
-        "Firebase"
+        "Figma",
+        "Design Systems",
+        "UX Writing",
+        "Research",
+        "Prototyping"
       ]
     },
     {
@@ -413,11 +447,12 @@
       "name": "Cody Fisher",
       "email": "cody.fisher@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "User Research",
+        "Adobe XD",
+        "Wireframing",
+        "Accessibility"
       ]
     },
     {
@@ -425,11 +460,12 @@
       "name": "Darlene Robertson",
       "email": "darlene.robertson@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Firebase",
+        "Flutter",
+        "Swift"
       ]
     },
     {
@@ -437,11 +473,12 @@
       "name": "Floyd Miles",
       "email": "floyd.miles@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Terraform",
+        "Monitoring"
       ]
     },
     {
@@ -449,11 +486,12 @@
       "name": "Jane Cooper",
       "email": "jane.cooper@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Tableau",
+        "Pandas",
+        "Visualization"
       ]
     },
     {
@@ -461,11 +499,12 @@
       "name": "Jerome Bell",
       "email": "jerome.bell@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "TensorFlow",
+        "Computer Vision",
+        "MLOps"
       ]
     },
     {
@@ -473,11 +512,12 @@
       "name": "Kathleen Edwards",
       "email": "kathleen.edwards@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "Kubernetes",
+        "Terraform",
+        "Networking"
       ]
     },
     {
@@ -485,11 +525,12 @@
       "name": "Marvin McKinney",
       "email": "marvin.mckinney@connct.dev",
       "profession": "Frontend Developer",
-      "bio": "Frontend Developer building useful products and exploring new ideas.",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "CSS",
+        "Tailwind"
       ]
     },
     {
@@ -497,11 +538,12 @@
       "name": "Megan Fox",
       "email": "megan.fox@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "Redis",
+        "Microservices"
       ]
     },
     {
@@ -509,11 +551,12 @@
       "name": "Nathaniel Russell",
       "email": "nathaniel.russell@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Vue",
-        "Nuxt",
-        "Tailwind"
+        "React",
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Docker"
       ]
     },
     {
@@ -521,11 +564,12 @@
       "name": "Olivia Rhye",
       "email": "olivia.rhye@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
-        "React Native",
-        "Expo",
-        "Firebase"
+        "Figma",
+        "Design Systems",
+        "Research",
+        "User Flows",
+        "Prototyping"
       ]
     },
     {
@@ -533,11 +577,12 @@
       "name": "Ralph Edwards",
       "email": "ralph.edwards@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "Wireframing",
+        "User Testing",
+        "Prototyping",
+        "Accessibility"
       ]
     },
     {
@@ -545,11 +590,12 @@
       "name": "Savannah Nguyen",
       "email": "savannah.nguyen@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Firebase",
+        "Android",
+        "iOS"
       ]
     },
     {
@@ -557,11 +603,12 @@
       "name": "Shane Watson",
       "email": "shane.watson@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Terraform",
+        "CI/CD"
       ]
     },
     {
@@ -569,11 +616,12 @@
       "name": "Tanya Fox",
       "email": "tanya.fox@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Power BI",
+        "Pandas",
+        "Dashboarding"
       ]
     },
     {
@@ -581,11 +629,12 @@
       "name": "Tom Cook",
       "email": "tom.cook@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "Scikit-learn",
+        "Model Training",
+        "MLOps"
       ]
     },
     {
@@ -593,11 +642,12 @@
       "name": "Wade Warren",
       "email": "wade.warren@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "GCP",
+        "Terraform",
+        "Security"
       ]
     },
     {
@@ -605,11 +655,12 @@
       "name": "Willie Howard",
       "email": "willie.howard@connct.dev",
       "profession": "Frontend Developer",
-      "bio": "Frontend Developer building useful products and exploring new ideas.",
       "techStack": [
         "React",
         "TypeScript",
-        "Next.js"
+        "Next.js",
+        "Tailwind",
+        "Performance"
       ]
     },
     {
@@ -617,11 +668,12 @@
       "name": "Yvonne Brown",
       "email": "yvonne.brown@connct.dev",
       "profession": "Backend Engineer",
-      "bio": "Backend Engineer building useful products and exploring new ideas.",
       "techStack": [
         "Node.js",
         "Express",
-        "PostgreSQL"
+        "PostgreSQL",
+        "Redis",
+        "REST APIs"
       ]
     },
     {
@@ -629,11 +681,12 @@
       "name": "Zachary Smith",
       "email": "zachary.smith@connct.dev",
       "profession": "Full-stack Developer",
-      "bio": "Full-stack Developer building useful products and exploring new ideas.",
       "techStack": [
         "Vue",
         "Nuxt",
-        "Tailwind"
+        "Tailwind",
+        "TypeScript",
+        "Node.js"
       ]
     },
     {
@@ -641,11 +694,12 @@
       "name": "Amanda Taylor",
       "email": "amanda.taylor@connct.dev",
       "profession": "Product Designer",
-      "bio": "Product Designer building useful products and exploring new ideas.",
       "techStack": [
-        "React Native",
-        "Expo",
-        "Firebase"
+        "Figma",
+        "Design Systems",
+        "UX Writing",
+        "Wireframing",
+        "Prototyping"
       ]
     },
     {
@@ -653,11 +707,12 @@
       "name": "Brian Johnson",
       "email": "brian.johnson@connct.dev",
       "profession": "UI/UX Designer",
-      "bio": "UI/UX Designer building useful products and exploring new ideas.",
       "techStack": [
-        "Python",
-        "FastAPI",
-        "PostgreSQL"
+        "Figma",
+        "User Research",
+        "Wireframing",
+        "Interaction Design",
+        "Accessibility"
       ]
     },
     {
@@ -665,11 +720,12 @@
       "name": "Chris Anderson",
       "email": "chris.anderson@connct.dev",
       "profession": "Mobile Developer",
-      "bio": "Mobile Developer building useful products and exploring new ideas.",
       "techStack": [
-        "Next.js",
-        "Prisma",
-        "PostgreSQL"
+        "React Native",
+        "Expo",
+        "Flutter",
+        "Firebase",
+        "Android"
       ]
     },
     {
@@ -677,11 +733,12 @@
       "name": "Daniel Wilson",
       "email": "daniel.wilson@connct.dev",
       "profession": "DevOps Engineer",
-      "bio": "DevOps Engineer building useful products and exploring new ideas.",
       "techStack": [
         "AWS",
         "Docker",
-        "Kubernetes"
+        "Kubernetes",
+        "Terraform",
+        "GitHub Actions"
       ]
     },
     {
@@ -689,11 +746,12 @@
       "name": "Emily Davis",
       "email": "emily.davis@connct.dev",
       "profession": "Data Analyst",
-      "bio": "Data Analyst building useful products and exploring new ideas.",
       "techStack": [
         "Python",
-        "PyTorch",
-        "MLOps"
+        "SQL",
+        "Pandas",
+        "Power BI",
+        "Forecasting"
       ]
     },
     {
@@ -701,11 +759,12 @@
       "name": "Michael Brown",
       "email": "michael.brown@connct.dev",
       "profession": "Machine Learning Engineer",
-      "bio": "Machine Learning Engineer building useful products and exploring new ideas.",
       "techStack": [
-        "Figma",
-        "Design Systems",
-        "Accessibility"
+        "Python",
+        "PyTorch",
+        "TensorFlow",
+        "Data Science",
+        "MLOps"
       ]
     },
     {
@@ -713,11 +772,12 @@
       "name": "Sarah Miller",
       "email": "sarah.miller@connct.dev",
       "profession": "Cloud Architect",
-      "bio": "Cloud Architect building useful products and exploring new ideas.",
       "techStack": [
-        "Angular",
-        "RxJS",
-        "TypeScript"
+        "AWS",
+        "Azure",
+        "GCP",
+        "Terraform",
+        "Kubernetes"
       ]
     },
     {
@@ -725,8 +785,17 @@
       "name": "vibhor s sharma",
       "email": "biz.vibhor@gmail.com",
       "profession": "frontend web developer",
-      "bio": "",
-      "techStack": []
+      "techStack": [
+        "React",
+        "JavaScript",
+        "TypeScript",
+        "HTML",
+        "CSS",
+        "zustand",
+        "next.js",
+        "redux",
+        "tailwind css"
+      ]
     }
   ],
   "projects": [

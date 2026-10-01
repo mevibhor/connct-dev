@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { User } from "@/types/models";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { Settings, Bookmark, LayoutGrid } from "lucide-react";
@@ -38,7 +39,7 @@ export function ProfileHeader({
             </AvatarFallback>
           </Avatar>
 
-          {/* Name + Post count */}
+          {/* Name + Profession + Skills + Post count */}
           <div className="min-w-0 flex-1">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
@@ -49,9 +50,24 @@ export function ProfileHeader({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {user.profession || "Add your profession"}
                 </p>
+
+                {/* Skills */}
+                {user.techStack && user.techStack.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {user.techStack.map((skill) => (
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="max-w-full"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Only post count */}
+              {/* Post count */}
               <div className="shrink-0 text-center sm:min-w-20">
                 <p className="text-lg leading-none font-semibold text-foreground sm:text-xl">
                   {projectCount}
@@ -130,6 +146,7 @@ export function ProfileHeader({
                   className="h-5 w-5"
                   strokeWidth={activeSection === "settings" ? 2 : 1.7}
                 />
+
                 {activeSection === "settings" && (
                   <span className="absolute -bottom-4.25 left-1/2 h-0.5 w-8 -translate-x-1/2 bg-foreground sm:-bottom-5.25" />
                 )}

@@ -6,14 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 import { Project, User } from "@/types/models";
 
 import { ProjectCard } from "@/components/feed/project-card";
 import { EmptyState } from "@/components/shared/empty-state";
 
-import { FolderGit2, Bookmark, LogOut, Trash2, Upload } from "lucide-react";
+import { FolderGit2, Bookmark, LogOut, Trash2, Upload, X } from "lucide-react";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useRouter } from "next/navigation";
@@ -42,7 +41,9 @@ export function ProfileTabs({
 
   const [name, setName] = useState(user.name || "");
 
-  const [bio, setBio] = useState(user.bio || "");
+  const [techStack, setTechStack] = useState<string[]>(user.techStack || []);
+
+  const [skillInput, setSkillInput] = useState("");
 
   const router = useRouter();
 
@@ -58,7 +59,58 @@ export function ProfileTabs({
 
   const PROF_LIMIT = 50;
   const NAME_LIMIT = 50;
-  const BIO_LIMIT = 200;
+
+  const MIN_SKILLS = 5;
+  const MAX_SKILLS = 10;
+
+  const handleAddSkill = () => {
+    const skill = skillInput.trim();
+
+    if (!skill) {
+      return;
+    }
+
+    const alreadyExists = techStack.some(
+      (item) => item.toLowerCase() === skill.toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      toast({
+        title: "Skill already added",
+        type: "warning",
+      });
+
+      setSkillInput("");
+      return;
+    }
+
+    if (techStack.length >= MAX_SKILLS) {
+      toast({
+        title: `You can add a maximum of ${MAX_SKILLS} skills`,
+        type: "warning",
+      });
+
+      return;
+    }
+
+    setTechStack((current) => [...current, skill]);
+    setSkillInput("");
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setTechStack((current) =>
+      current.filter(
+        (skill) => skill.toLowerCase() !== skillToRemove.toLowerCase(),
+      ),
+    );
+  };
+
+  const handleSkillKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleAddSkill();
+    }
+  };
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -79,6 +131,24 @@ export function ProfileTabs({
       return;
     }
 
+    if (techStack.length < MIN_SKILLS) {
+      toast({
+        title: `Please add at least ${MIN_SKILLS} skills`,
+        type: "error",
+      });
+
+      return;
+    }
+
+    if (techStack.length > MAX_SKILLS) {
+      toast({
+        title: `You can add a maximum of ${MAX_SKILLS} skills`,
+        type: "error",
+      });
+
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -90,7 +160,7 @@ export function ProfileTabs({
         body: JSON.stringify({
           name,
           profession,
-          bio,
+          techStack,
         }),
       });
 
@@ -307,31 +377,91 @@ export function ProfileTabs({
                     </div>
                   </div>
 
-                  {/* Bio */}
+                  {/* Skills */}
 
-                  <div className="space-y-2">
-                    <Textarea
-                      id="bio"
-                      value={bio}
-                      maxLength={BIO_LIMIT}
-                      onChange={(e) =>
-                        setBio(e.target.value.slice(0, BIO_LIMIT))
-                      }
-                      placeholder="Tell people a little about yourself, your interests, or what you're building..."
-                      rows={4}
-                      className="resize-none"
-                    />
-
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between gap-4">
-                      <p className="text-xs text-muted-foreground">
-                        Keep it short and introduce yourself to other
-                        developers.
-                      </p>
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground">
+                          Skills
+                        </h3>
 
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {bio.length}/{BIO_LIMIT}
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Add the technologies you use for collaboration.
+                        </p>
+                      </div>
+
+                      <span
+                        className={
+                          techStack.length < MIN_SKILLS
+                            ? "shrink-0 text-xs font-medium text-destructive"
+                            : "shrink-0 text-xs text-muted-foreground"
+                        }
+                      >
+                        {techStack.length}/{MAX_SKILLS}
                       </span>
                     </div>
+
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Input
+                        value={skillInput}
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        onKeyDown={handleSkillKeyDown}
+                        placeholder="Add a skill, e.g. React"
+                        disabled={techStack.length >= MAX_SKILLS}
+                        className="h-11"
+                      />
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleAddSkill}
+                        disabled={
+                          !skillInput.trim() || techStack.length >= MAX_SKILLS
+                        }
+                        className="h-11 shrink-0"
+                      >
+                        Add Skill
+                      </Button>
+                    </div>
+
+                    {techStack.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {techStack.map((skill) => (
+                          <div
+                            key={skill}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1.5 text-sm text-foreground"
+                          >
+                            <span>{skill}</span>
+
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSkill(skill)}
+                              aria-label={`Remove ${skill}`}
+                              className="rounded-sm text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <p
+                      className={
+                        techStack.length < MIN_SKILLS
+                          ? "text-xs text-destructive"
+                          : "text-xs text-muted-foreground"
+                      }
+                    >
+                      {techStack.length < MIN_SKILLS
+                        ? `Add at least ${MIN_SKILLS - techStack.length} more ${
+                            MIN_SKILLS - techStack.length === 1
+                              ? "skill"
+                              : "skills"
+                          }.`
+                        : `You can add up to ${MAX_SKILLS} skills.`}
+                    </p>
                   </div>
 
                   {/* Theme */}
