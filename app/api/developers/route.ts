@@ -1,28 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockUsers, delay } from "@/lib/mock-data";
+
+import { readDatabase } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
-  await delay(500);
+  try {
+    const db = await readDatabase();
 
-  const { searchParams } = new URL(request.url);
-  const search = searchParams.get("search")?.toLowerCase() || "";
-  const tech = searchParams.get("tech") || "";
+    const { searchParams } = new URL(request.url);
 
-  let filtered = mockUsers;
+    const search = searchParams.get("search")?.trim().toLowerCase() || "";
 
-  if (search) {
-    filtered = filtered.filter(
-      (u) =>
-        u.name.toLowerCase().includes(search) ||
-        u.profession?.toLowerCase().includes(search),
+    const tech = searchParams.get("tech")?.trim().toLowerCase() || "";
+
+    let developers = db.users;
+
+    if (search) {
+      developers = developers.filter((user) => {
+        const nameMatch = user.name.toLowerCase().includes(search);
+
+        const professionMatch = user.profession?.toLowerCase().includes(search);
+
+        const bioMatch = user.bio?.toLowerCase().includes(search);
+
+        const techStackMatch = user.techStack?.some((item) =>
+          item.toLowerCase().includes(search),
+        );
+
+        return nameMatch || professionMatch || bioMatch || techStackMatch;
+      });
+    }
+
+    if (tech) {
+      developers = developers.filter((user) =>
+        user.techStack?.some((item) => item.toLowerCase().includes(tech)),
+      );
+    }
+
+    const data = developers.map((user) => ({
+      ...user,
+
+      projectCount: db.projects.filter(
+        (project) => project.authorId === user.id,
+      ).length,
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error("Get developers error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch developers",
+      },
+      { status: 500 },
     );
   }
-
-  if (tech) {
-    filtered = filtered.filter((u) =>
-      u.techStack?.some((t) => t.toLowerCase() === tech.toLowerCase()),
-    );
-  }
-
-  return NextResponse.json({ success: true, data: filtered });
 }

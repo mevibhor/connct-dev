@@ -47,7 +47,6 @@ export function MobileNav() {
             )}
           >
             <Icon className={cn("h-6 w-6", isActive && "fill-current/10")} />
-            <span className="mt-1 text-[10px] font-medium">{item.label}</span>
           </Link>
         );
       })}
@@ -68,7 +67,6 @@ export function MobileNav() {
             pathname.startsWith("/profile") && "fill-current/10",
           )}
         />
-        <span className="mt-1 text-[10px] font-medium">Profile</span>
       </Link>
 
       {/* Coming Soon Buttons */}
@@ -81,7 +79,6 @@ export function MobileNav() {
             className="flex flex-col items-center justify-center p-2 text-muted-foreground transition-colors hover:text-foreground"
           >
             <Icon className="h-6 w-6" />
-            <span className="mt-1 text-[10px] font-medium">{item.label}</span>
           </button>
         );
       })}

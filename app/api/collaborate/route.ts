@@ -1,30 +1,159 @@
 import { NextRequest, NextResponse } from "next/server";
-import { delay } from "@/lib/mock-data";
 
-export async function POST(request: NextRequest) {
-  await delay(800); // Simulate network delay
+import { readDatabase, writeDatabase, generateId } from "@/lib/db";
 
+export async function GET(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { projectId, pitch, availability, relevantTech } = body;
+    const { searchParams } = new URL(request.url);
 
-    if (!projectId || !pitch || !availability || !relevantTech) {
+    const userId = searchParams.get("userId");
+
+    if (!userId) {
       return NextResponse.json(
-        { success: false, error: "Missing fields" },
+        {
+          success: false,
+          error: "User ID is required",
+        },
         { status: 400 },
       );
     }
 
-    // In a real app, we'd save this to a database. Here, we just accept it.
-    console.log("Mock Backend received collaboration request:", body);
+    const db = await readDatabase();
+
+    const inquiryProjectIds = db.inquiries
+      .filter((inquiry) => inquiry.userId === userId)
+      .map((inquiry) => inquiry.projectId);
 
     return NextResponse.json({
       success: true,
-      message: "Request sent successfully!",
+      data: inquiryProjectIds,
     });
   } catch (error) {
+    console.error("Get inquiry status error:", error);
+
     return NextResponse.json(
-      { success: false, error: `oops! ${error}` },
+      {
+        success: false,
+        error: "Failed to fetch inquiry status",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    const { userId, projectId, pitch, availability, relevantTech } = body;
+
+    if (!userId || !projectId || !pitch || !availability || !relevantTech) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "All fields are required",
+        },
+        { status: 400 },
+      );
+    }
+
+    const db = await readDatabase();
+
+    const userExists = db.users.some((user) => user.id === userId);
+
+    if (!userExists) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const project = db.projects.find((item) => item.id === projectId);
+
+    if (!project) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Project not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    if (project.authorId === userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "You cannot inquire about your own project",
+        },
+        { status: 403 },
+      );
+    }
+
+    const existingInquiry = db.inquiries.find(
+      (inquiry) => inquiry.userId === userId && inquiry.projectId === projectId,
+    );
+
+    if (existingInquiry) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "You have already inquired about this project",
+        },
+        { status: 409 },
+      );
+    }
+
+    const inquiry = {
+      id: generateId("inquiry"),
+      userId,
+      projectId,
+      pitch: pitch.trim(),
+      availability,
+      relevantTech: relevantTech.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    db.inquiries.push(inquiry);
+
+    const existingBookmark = db.bookmarks.find(
+      (bookmark) =>
+        bookmark.userId === userId && bookmark.projectId === projectId,
+    );
+
+    if (!existingBookmark) {
+      db.bookmarks.push({
+        userId,
+        projectId,
+        createdAt: new Date().toISOString(),
+      });
+
+      const projectIndex = db.projects.findIndex(
+        (item) => item.id === projectId,
+      );
+
+      if (projectIndex !== -1) {
+        db.projects[projectIndex].bookmarkCount += 1;
+      }
+    }
+
+    await writeDatabase(db);
+
+    return NextResponse.json({
+      success: true,
+      data: inquiry,
+    });
+  } catch (error) {
+    console.error("Collaboration request error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to send collaboration request",
+      },
       { status: 500 },
     );
   }

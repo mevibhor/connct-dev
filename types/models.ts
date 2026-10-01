@@ -8,13 +8,6 @@ export interface User {
   profession?: string;
 }
 
-export interface AuthResponse {
-  success: boolean;
-  user?: User;
-  token?: string;
-  error?: string;
-}
-
 export interface Project {
   id: string;
   authorId: string;
@@ -24,4 +17,11 @@ export interface Project {
   stage: "Idea" | "MVP" | "Production";
   createdAt: string;
   bookmarkCount: number;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user?: User;
+  token?: string;
+  error?: string;
 }

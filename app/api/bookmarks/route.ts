@@ -1,40 +1,173 @@
 import { NextRequest, NextResponse } from "next/server";
-import { bookmarkedProjectIds, toggleBookmark, delay } from "@/lib/mock-data";
 
-// GET: Fetch all bookmarked project IDs for the current user
-export async function GET() {
-  await delay(300); // Fast response for UI feel
-  return NextResponse.json({
-    success: true,
-    data: bookmarkedProjectIds,
-  });
-}
+import { readDatabase, writeDatabase } from "@/lib/db";
 
-// POST: Toggle a bookmark
-export async function POST(request: NextRequest) {
-  await delay(500); // Simulate network latency
-
+export async function GET(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { projectId } = body;
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("userId");
 
-    if (!projectId) {
+    if (!userId) {
       return NextResponse.json(
-        { success: false, error: "Project ID is required" },
+        {
+          success: false,
+          error: "User ID is required",
+        },
         { status: 400 },
       );
     }
 
-    // Toggle the bookmark in our mock database
-    const updatedBookmarks = toggleBookmark(projectId);
+    const db = await readDatabase();
+
+    const bookmarks = db.bookmarks.filter(
+      (bookmark) => bookmark.userId === userId,
+    );
+
+    const bookmarkedIds = bookmarks.map((bookmark) => bookmark.projectId);
+
+    const bookmarkedProjects = bookmarks
+      .map((bookmark) => {
+        const project = db.projects.find(
+          (item) => item.id === bookmark.projectId,
+        );
+
+        if (!project) {
+          return null;
+        }
+
+        return {
+          ...project,
+          author: db.users.find((user) => user.id === project.authorId),
+        };
+      })
+      .filter(Boolean);
 
     return NextResponse.json({
       success: true,
-      data: updatedBookmarks,
+      data: {
+        ids: bookmarkedIds,
+        projects: bookmarkedProjects,
+      },
     });
   } catch (error) {
+    console.error("Get bookmarks error:", error);
+
     return NextResponse.json(
-      { success: false, error: `oops! ${error}` },
+      {
+        success: false,
+        error: "Failed to fetch bookmarks",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    const { userId, projectId } = body;
+
+    if (!userId || !projectId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "User ID and project ID are required",
+        },
+        { status: 400 },
+      );
+    }
+
+    const db = await readDatabase();
+
+    const userExists = db.users.some((user) => user.id === userId);
+
+    if (!userExists) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const projectIndex = db.projects.findIndex(
+      (project) => project.id === projectId,
+    );
+
+    if (projectIndex === -1) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Project not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const bookmarkIndex = db.bookmarks.findIndex(
+      (bookmark) =>
+        bookmark.userId === userId && bookmark.projectId === projectId,
+    );
+
+    if (bookmarkIndex !== -1) {
+      db.bookmarks.splice(bookmarkIndex, 1);
+
+      db.projects[projectIndex].bookmarkCount = Math.max(
+        0,
+        db.projects[projectIndex].bookmarkCount - 1,
+      );
+    } else {
+      db.bookmarks.push({
+        userId,
+        projectId,
+        createdAt: new Date().toISOString(),
+      });
+
+      db.projects[projectIndex].bookmarkCount += 1;
+    }
+
+    await writeDatabase(db);
+
+    const userBookmarks = db.bookmarks.filter(
+      (bookmark) => bookmark.userId === userId,
+    );
+
+    const bookmarkedIds = userBookmarks.map((bookmark) => bookmark.projectId);
+
+    const bookmarkedProjects = userBookmarks
+      .map((bookmark) => {
+        const project = db.projects.find(
+          (item) => item.id === bookmark.projectId,
+        );
+
+        if (!project) {
+          return null;
+        }
+
+        return {
+          ...project,
+          author: db.users.find((user) => user.id === project.authorId),
+        };
+      })
+      .filter(Boolean);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        ids: bookmarkedIds,
+        projects: bookmarkedProjects,
+      },
+    });
+  } catch (error) {
+    console.error("Update bookmark error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to update bookmark",
+      },
       { status: 500 },
     );
   }

@@ -1,34 +1,65 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Project } from "@/types/models";
+import { Project, User } from "@/types/models";
+
+export interface ProjectWithAuthor extends Project {
+  author?: User;
+}
+
+interface ProjectsResponse {
+  success: boolean;
+  data: ProjectWithAuthor[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    hasMore: boolean;
+  };
+  error?: string;
+}
 
 interface UseProjectsParams {
   search?: string;
   stage?: string;
+  page?: number;
 }
 
-async function fetchProjects(params: UseProjectsParams): Promise<Project[]> {
-  // Build the query string dynamically
+async function fetchProjects(
+  params: UseProjectsParams,
+): Promise<ProjectsResponse> {
   const queryParams = new URLSearchParams();
-  if (params.search) queryParams.set("search", params.search);
-  if (params.stage) queryParams.set("stage", params.stage);
 
-  const response = await fetch(`/api/projects?${queryParams.toString()}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  if (params.search) {
+    queryParams.set("search", params.search);
+  }
 
-  if (!response.ok) throw new Error("Failed to fetch projects");
+  if (params.stage) {
+    queryParams.set("stage", params.stage);
+  }
+
+  if (params.page) {
+    queryParams.set("page", String(params.page));
+  }
+
+  const response = await fetch(`/api/projects?${queryParams.toString()}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch projects");
+  }
+
   const result = await response.json();
-  return result.data;
+
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch projects");
+  }
+
+  return result;
 }
 
 export function useProjects(params: UseProjectsParams = {}) {
   return useQuery({
-    // The queryKey now includes the params.
-    // TanStack Query will automatically refetch when these change!
-    queryKey: ["projects", params.search, params.stage],
+    queryKey: ["projects", params.search, params.stage, params.page],
     queryFn: () => fetchProjects(params),
     staleTime: 1000 * 60 * 5,
     retry: 1,

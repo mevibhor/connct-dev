@@ -1,13 +1,35 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-// 1. Fetch initial bookmarks
-const fetchBookmarks = async (): Promise<string[]> => {
-  const response = await fetch("/api/bookmarks");
-  if (!response.ok) throw new Error("Failed to fetch bookmarks");
+import { useToast } from "@/hooks/use-toast";
+import { useAuthStore } from "@/stores/use-auth-store";
+import { Project, User } from "@/types/models";
+
+export interface BookmarkedProject extends Project {
+  author?: User;
+}
+
+interface BookmarksData {
+  ids: string[];
+  projects: BookmarkedProject[];
+}
+
+const fetchBookmarks = async (userId: string): Promise<BookmarksData> => {
+  const response = await fetch(
+    `/api/bookmarks?userId=${encodeURIComponent(userId)}`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookmarks");
+  }
+
   const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch bookmarks");
+  }
+
   return result.data;
 };
 
@@ -15,67 +37,125 @@ export function useBookmarks() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Query to get the list of bookmarked IDs
-  const { data: bookmarkedIds = [] } = useQuery({
-    queryKey: ["bookmarks"],
-    queryFn: fetchBookmarks,
+  const user = useAuthStore((state) => state.user);
+
+  const userId = user?.id;
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["bookmarks", userId],
+    queryFn: () => fetchBookmarks(userId as string),
+    enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });
 
-  // Mutation to toggle a bookmark
+  const bookmarkedIds = data?.ids || [];
+  const bookmarkedProjects = data?.projects || [];
+
   const toggleBookmarkMutation = useMutation({
     mutationFn: async (projectId: string) => {
+      if (!userId) {
+        throw new Error("You must be logged in");
+      }
+
       const response = await fetch("/api/bookmarks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          projectId,
+        }),
       });
-      if (!response.ok) throw new Error("Failed to toggle bookmark");
-      const result = await response.json();
-      return result.data; // Returns the new array of IDs
-    },
 
-    //  OPTIMISTIC UPDATE: Runs before the API call finishes
-    onMutate: async (projectId) => {
-      // Cancel any outgoing refetches so they don't overwrite our optimistic update
-      await queryClient.cancelQueries({ queryKey: ["bookmarks"] });
-
-      // Snapshot the previous value
-      const previousBookmarks =
-        queryClient.getQueryData<string[]>(["bookmarks"]) || [];
-
-      // Optimistically update the cache
-      const isBookmarked = previousBookmarks.includes(projectId);
-      const newBookmarks = isBookmarked
-        ? previousBookmarks.filter((id) => id !== projectId)
-        : [...previousBookmarks, projectId];
-
-      queryClient.setQueryData(["bookmarks"], newBookmarks);
-
-      // Return context with the snapshotted value
-      return { previousBookmarks };
-    },
-
-    //  ROLLBACK: If the API fails, revert to the snapshot
-    onError: (err, projectId, context) => {
-      if (context?.previousBookmarks) {
-        queryClient.setQueryData(["bookmarks"], context.previousBookmarks);
+      if (!response.ok) {
+        throw new Error("Failed to update bookmark");
       }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update bookmark");
+      }
+
+      return result.data as BookmarksData;
+    },
+
+    onMutate: async (projectId) => {
+      if (!userId) {
+        return;
+      }
+
+      await queryClient.cancelQueries({
+        queryKey: ["bookmarks", userId],
+      });
+
+      const previousData = queryClient.getQueryData<BookmarksData>([
+        "bookmarks",
+        userId,
+      ]);
+
+      const previousIds = previousData?.ids || [];
+
+      const isBookmarked = previousIds.includes(projectId);
+
+      const updatedIds = isBookmarked
+        ? previousIds.filter((id) => id !== projectId)
+        : [...previousIds, projectId];
+
+      queryClient.setQueryData<BookmarksData>(["bookmarks", userId], {
+        ids: updatedIds,
+        projects: previousData?.projects || [],
+      });
+
+      return {
+        previousData,
+      };
+    },
+
+    onError: (_error, _projectId, context) => {
+      if (!userId) {
+        return;
+      }
+
+      if (context?.previousData) {
+        queryClient.setQueryData(["bookmarks", userId], context.previousData);
+      }
+
       toast({
         title: "Failed to update bookmark",
         type: "error",
       });
     },
 
-    // ✅ REFETCH: Always refetch after error or success to ensure sync
+    onSuccess: (result) => {
+      if (!userId) {
+        return;
+      }
+
+      queryClient.setQueryData(["bookmarks", userId], result);
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+    },
+
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+      if (!userId) {
+        return;
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarks", userId],
+      });
     },
   });
 
   return {
     bookmarkedIds,
+    bookmarkedProjects,
     toggleBookmark: toggleBookmarkMutation.mutate,
     isPending: toggleBookmarkMutation.isPending,
+    isLoading,
   };
 }

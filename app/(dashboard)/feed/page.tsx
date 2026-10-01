@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
 
 import { useProjects } from "@/hooks/use-projects";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -16,34 +16,37 @@ function FeedContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // 1. Initialize state from URL params
   const initialSearch = searchParams.get("search") || "";
   const initialStage = searchParams.get("stage") || "";
 
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [stage, setStage] = useState(initialStage);
 
-  // 2. Debounce the search input so we don't spam the API
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // 3. Fetch data using TanStack Query
-  const {
-    data: projects,
-    isLoading,
-    isError,
-  } = useProjects({
+  const { data, isLoading, isError } = useProjects({
     search: debouncedSearch,
-    stage: stage,
+    stage,
   });
 
-  // 4. Sync state back to the URL when filters change
+  const projects = data?.data || [];
+
   useEffect(() => {
     const params = new URLSearchParams();
-    if (debouncedSearch) params.set("search", debouncedSearch);
-    if (stage) params.set("stage", stage);
 
-    // Use replace so we don't clutter the browser history stack
-    router.replace(`/feed?${params.toString()}`, { scroll: false });
+    if (debouncedSearch) {
+      params.set("search", debouncedSearch);
+    }
+
+    if (stage) {
+      params.set("stage", stage);
+    }
+
+    const queryString = params.toString();
+
+    router.replace(queryString ? `/feed?${queryString}` : "/feed", {
+      scroll: false,
+    });
   }, [debouncedSearch, stage, router]);
 
   const handleStageChange = (newStage: string) => {
@@ -54,7 +57,6 @@ function FeedContent() {
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
       <CreateProjectBox />
 
-      {/* Filter Bar */}
       <FilterBar
         search={searchInput}
         stage={stage}
@@ -62,7 +64,6 @@ function FeedContent() {
         onStageChange={handleStageChange}
       />
 
-      {/* Feed Content */}
       <div className="space-y-4">
         {isLoading && (
           <>
@@ -78,13 +79,13 @@ function FeedContent() {
         )}
 
         {!isLoading &&
-          projects &&
+          !isError &&
           projects.length > 0 &&
           projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
 
-        {!isLoading && projects && projects.length === 0 && (
+        {!isLoading && !isError && projects.length === 0 && (
           <EmptyState
             icon={SearchX}
             title="No projects found"

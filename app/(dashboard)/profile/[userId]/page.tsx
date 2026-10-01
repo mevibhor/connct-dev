@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+
 import { Project, User } from "@/types/models";
-import { mockProjects } from "@/lib/mock-data"; // ✅ Import global mock data to filter
-import { useBookmarks } from "@/hooks/use-bookmarks"; // ✅ Import the bookmark hook
+import { useBookmarks } from "@/hooks/use-bookmarks";
+
 import {
   ProfileHeader,
   type ProfileSection,
 } from "@/components/profile/profile-header";
+
 import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { FeedSkeleton } from "@/components/feed/feed-skeleton";
 
@@ -32,23 +34,18 @@ async function fetchProfile(userId: string): Promise<ProfileResponse> {
 
 export default function ProfilePage() {
   const params = useParams();
+
   const userId = params.userId as string;
 
-  /*
-   * This is the SINGLE source of truth for:
-   * posts, saved posts, settings
-   */
   const [activeSection, setActiveSection] = useState<ProfileSection>("posts");
 
-  // 1. Fetch Profile Data
   const { data, isLoading, isError } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => fetchProfile(userId),
     enabled: !!userId,
   });
 
-  // 2. Fetch Bookmarks (Client-side state)
-  const { bookmarkedIds } = useBookmarks();
+  const { bookmarkedProjects } = useBookmarks();
 
   if (isLoading) {
     return (
@@ -67,11 +64,6 @@ export default function ProfilePage() {
     );
   }
 
-  // 3. Filter the global mock projects to find the ones the user bookmarked
-  const bookmarkedProjects = mockProjects.filter((p) =>
-    bookmarkedIds.includes(p.id),
-  );
-
   return (
     <div className="min-h-screen w-full bg-background">
       <ProfileHeader
@@ -84,7 +76,7 @@ export default function ProfilePage() {
       <ProfileTabs
         user={data.user}
         projects={data.projects}
-        bookmarkedProjects={bookmarkedProjects} // ✅ Pass the real filtered data here
+        bookmarkedProjects={bookmarkedProjects}
         activeSection={activeSection}
       />
     </div>

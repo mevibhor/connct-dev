@@ -1,79 +1,214 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockProjects, mockUsers, delay, Project } from "@/lib/mock-data";
+
+import { readDatabase, writeDatabase, generateId } from "@/lib/db";
+
+import { Project } from "@/types/models";
+
+const PAGE_SIZE = 20;
 
 export async function GET(request: NextRequest) {
-  await delay(800); // Keep the delay so we can see the skeletons!
+  try {
+    const db = await readDatabase();
 
-  // 1. Extract query parameters from the URL
-  const { searchParams } = new URL(request.url);
-  const search = searchParams.get("search")?.toLowerCase() || "";
-  const stage = searchParams.get("stage") || "";
+    const { searchParams } = new URL(request.url);
 
-  // 2. Filter the mock data in memory
-  let filtered = mockProjects;
+    const search = searchParams.get("search")?.toLowerCase() || "";
 
-  if (search) {
-    filtered = filtered.filter(
-      (p) =>
-        p.title.toLowerCase().includes(search) ||
-        p.description.toLowerCase().includes(search) ||
-        p.techStack.some((tech) => tech.toLowerCase().includes(search)),
+    const stage = searchParams.get("stage") || "";
+
+    const page = Math.max(Number(searchParams.get("page") || "1"), 1);
+
+    let filtered = db.projects;
+
+    if (search) {
+      filtered = filtered.filter(
+        (project) =>
+          project.title.toLowerCase().includes(search) ||
+          project.description.toLowerCase().includes(search) ||
+          project.techStack.some((tech) => tech.toLowerCase().includes(search)),
+      );
+    }
+
+    if (stage) {
+      filtered = filtered.filter((project) => project.stage === stage);
+    }
+
+    const total = filtered.length;
+
+    const start = (page - 1) * PAGE_SIZE;
+
+    const end = start + PAGE_SIZE;
+
+    const paginatedProjects = filtered.slice(start, end);
+
+    const projectsWithAuthors = paginatedProjects.map((project) => ({
+      ...project,
+      author: db.users.find((user) => user.id === project.authorId),
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data: projectsWithAuthors,
+      pagination: {
+        page,
+        pageSize: PAGE_SIZE,
+        total,
+        hasMore: end < total,
+      },
+    });
+  } catch (error) {
+    console.error("Get projects error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch projects",
+      },
+      { status: 500 },
     );
   }
-
-  if (stage) {
-    filtered = filtered.filter((p) => p.stage === stage);
-  }
-
-  // 3. Attach the author information to each project
-  const projectsWithAuthors = filtered.map((project) => ({
-    ...project,
-    author: mockUsers.find((user) => user.id === project.authorId),
-  }));
-
-  return NextResponse.json({
-    success: true,
-    data: projectsWithAuthors,
-  });
 }
 
-// POST Function
-
 export async function POST(request: NextRequest) {
-  await delay(800);
-
   try {
+    const db = await readDatabase();
+
     const body = await request.json();
 
     const { title, description, techStack, stage, authorId } = body;
 
     if (!title || !description || !techStack || !stage || !authorId) {
       return NextResponse.json(
-        { success: false, error: "Missing fields" },
+        {
+          success: false,
+          error: "Missing fields",
+        },
         { status: 400 },
       );
     }
 
+    const authorExists = db.users.some((user) => user.id === authorId);
+
+    if (!authorExists) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Author not found",
+        },
+        { status: 404 },
+      );
+    }
+
     const newProject: Project = {
-      id: "p" + Date.now(),
+      id: generateId("project"),
       authorId,
-      title,
-      description,
-      techStack: techStack.split(",").map((t: string) => t.trim()),
-      stage: stage as "Idea" | "MVP" | "Production",
-      createdAt: "Just now",
+      title: title.trim(),
+      description: description.trim(),
+      techStack: techStack
+        .split(",")
+        .map((tech: string) => tech.trim())
+        .filter(Boolean),
+      stage,
+      createdAt: new Date().toISOString(),
       bookmarkCount: 0,
     };
 
-    mockProjects.unshift(newProject);
+    db.projects.unshift(newProject);
+
+    await writeDatabase(db);
 
     return NextResponse.json({
       success: true,
-      data: newProject,
+      data: {
+        ...newProject,
+        author: db.users.find((user) => user.id === authorId),
+      },
     });
   } catch (error) {
+    console.error("Create project error:", error);
+
     return NextResponse.json(
-      { success: false, error: `oops! ${error}` },
+      {
+        success: false,
+        error: "Failed to create project",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+
+    const projectId = searchParams.get("projectId");
+
+    const userId = searchParams.get("userId");
+
+    if (!projectId || !userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Project ID and user ID are required",
+        },
+        { status: 400 },
+      );
+    }
+
+    const db = await readDatabase();
+
+    const projectIndex = db.projects.findIndex(
+      (project) => project.id === projectId,
+    );
+
+    if (projectIndex === -1) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Project not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const project = db.projects[projectIndex];
+
+    if (project.authorId !== userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "You can only delete your own project",
+        },
+        { status: 403 },
+      );
+    }
+
+    db.projects.splice(projectIndex, 1);
+
+    db.bookmarks = db.bookmarks.filter(
+      (bookmark) => bookmark.projectId !== projectId,
+    );
+
+    db.inquiries = db.inquiries.filter(
+      (inquiry) => inquiry.projectId !== projectId,
+    );
+
+    await writeDatabase(db);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        projectId,
+      },
+    });
+  } catch (error) {
+    console.error("Delete project error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to delete project",
+      },
       { status: 500 },
     );
   }

@@ -1,60 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockUsers, mockProjects, delay } from "@/lib/mock-data";
+
+import { readDatabase, writeDatabase } from "@/lib/db";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ userId: string }> },
 ) {
-  await delay(600);
-
-  const { userId } = await params;
-
-  // Find the requested user
-  const user = mockUsers.find((u) => u.id === userId);
-
-  if (!user) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "User not found",
-      },
-      { status: 404 },
-    );
-  }
-
-  // Find all projects created by this user
-  const userProjects = mockProjects
-    .filter((project) => project.authorId === userId)
-    .map((project) => ({
-      ...project,
-      author: user,
-    }));
-
-  return NextResponse.json({
-    success: true,
-    data: {
-      user,
-      projects: userProjects,
-    },
-  });
-}
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
-  await delay(600);
-
   try {
     const { userId } = await params;
-    const body = await request.json();
 
-    const { name, profession, bio } = body;
+    const db = await readDatabase();
 
-    // Find the user
-    const userIndex = mockUsers.findIndex((u) => u.id === userId);
+    const user = db.users.find((item) => item.id === userId);
 
-    if (userIndex === -1) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
@@ -64,7 +23,44 @@ export async function PUT(
       );
     }
 
-    // Basic validation
+    const userProjects = db.projects
+      .filter((project) => project.authorId === userId)
+      .map((project) => ({
+        ...project,
+        author: user,
+      }));
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        user,
+        projects: userProjects,
+      },
+    });
+  } catch (error) {
+    console.error("Get profile error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to load profile",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ userId: string }> },
+) {
+  try {
+    const { userId } = await params;
+
+    const body = await request.json();
+
+    const { name, profession, bio } = body;
+
     if (!name?.trim()) {
       return NextResponse.json(
         {
@@ -85,23 +81,42 @@ export async function PUT(
       );
     }
 
-    // Update the existing user
-    mockUsers[userIndex] = {
-      ...mockUsers[userIndex],
+    const db = await readDatabase();
+
+    const userIndex = db.users.findIndex((user) => user.id === userId);
+
+    if (userIndex === -1) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const updatedUser = {
+      ...db.users[userIndex],
       name: name.trim(),
       profession: profession.trim(),
       bio: bio?.trim() || "",
     };
 
+    db.users[userIndex] = updatedUser;
+
+    await writeDatabase(db);
+
     return NextResponse.json({
       success: true,
-      data: mockUsers[userIndex],
+      data: updatedUser,
     });
   } catch (error) {
+    console.error("Update profile error:", error);
+
     return NextResponse.json(
       {
         success: false,
-        error: `oops! ${error}`,
+        error: "Failed to update profile",
       },
       { status: 500 },
     );

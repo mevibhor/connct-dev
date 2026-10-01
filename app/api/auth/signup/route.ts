@@ -1,40 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockUsers, delay } from "@/lib/mock-data";
+
+import { readDatabase, writeDatabase, generateId } from "@/lib/db";
+
 import { AuthResponse, User } from "@/types/models";
 
 export async function POST(request: NextRequest) {
-  await delay(800);
-
   try {
     const body = await request.json();
+
     const { name, email, profession, password } = body;
 
     if (!name || !email || !profession || !password) {
       return NextResponse.json<AuthResponse>(
-        { success: false, error: "All fields are required" },
-        { status: 400 },
+        {
+          success: false,
+          error: "All fields are required",
+        },
+        {
+          status: 400,
+        },
       );
     }
 
-    const existingUser = mockUsers.find((u) => u.email === email);
+    if (password.length < 6) {
+      return NextResponse.json<AuthResponse>(
+        {
+          success: false,
+          error: "Password must be at least 6 characters",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const db = await readDatabase();
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = db.users.find(
+      (user) => user.email.toLowerCase() === normalizedEmail,
+    );
 
     if (existingUser) {
       return NextResponse.json<AuthResponse>(
-        { success: false, error: "User with this email already exists" },
-        { status: 409 },
+        {
+          success: false,
+          error: "User with this email already exists",
+        },
+        {
+          status: 409,
+        },
       );
     }
 
     const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      profession,
+      id: generateId("user"),
+      name: name.trim(),
+      email: normalizedEmail,
+      profession: profession.trim(),
       bio: "",
       techStack: [],
     };
 
-    mockUsers.push(newUser);
+    db.users.push(newUser);
+
+    await writeDatabase(db);
 
     return NextResponse.json<AuthResponse>({
       success: true,
@@ -42,9 +73,16 @@ export async function POST(request: NextRequest) {
       token: `mock-token-${newUser.id}-${Date.now()}`,
     });
   } catch (error) {
+    console.error("Signup error:", error);
+
     return NextResponse.json<AuthResponse>(
-      { success: false, error: `oops! ${error}` },
-      { status: 500 },
+      {
+        success: false,
+        error: "Failed to create account",
+      },
+      {
+        status: 500,
+      },
     );
   }
 }

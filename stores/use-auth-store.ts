@@ -1,13 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 import { User } from "@/types/models";
 
 interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+
   login: (user: User, token: string) => void;
+
   updateUser: (user: User) => void;
+
   logout: () => void;
 }
 
