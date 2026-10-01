@@ -5,22 +5,30 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ userId: string }> },
 ) {
-  await delay(600); // Simulate network delay
+  await delay(600);
 
-  // In Next.js 15, params is a Promise, so we must await it
   const { userId } = await params;
 
+  // Find the requested user
   const user = mockUsers.find((u) => u.id === userId);
 
   if (!user) {
     return NextResponse.json(
-      { success: false, error: "User not found" },
+      {
+        success: false,
+        error: "User not found",
+      },
       { status: 404 },
     );
   }
 
   // Find all projects created by this user
-  const userProjects = mockProjects.filter((p) => p.authorId === userId);
+  const userProjects = mockProjects
+    .filter((project) => project.authorId === userId)
+    .map((project) => ({
+      ...project,
+      author: user,
+    }));
 
   return NextResponse.json({
     success: true,

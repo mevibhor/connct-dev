@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockProjects, delay, Project } from "@/lib/mock-data";
+import { mockProjects, mockUsers, delay, Project } from "@/lib/mock-data";
 
 export async function GET(request: NextRequest) {
   await delay(800); // Keep the delay so we can see the skeletons!
@@ -25,41 +25,46 @@ export async function GET(request: NextRequest) {
     filtered = filtered.filter((p) => p.stage === stage);
   }
 
+  // 3. Attach the author information to each project
+  const projectsWithAuthors = filtered.map((project) => ({
+    ...project,
+    author: mockUsers.find((user) => user.id === project.authorId),
+  }));
+
   return NextResponse.json({
     success: true,
-    data: filtered,
+    data: projectsWithAuthors,
   });
 }
 
-// ✅ ADD THIS POST FUNCTION
+// POST Function
+
 export async function POST(request: NextRequest) {
-  await delay(800); // Simulate network delay
+  await delay(800);
 
   try {
     const body = await request.json();
-    const { title, description, techStack, stage } = body;
 
-    if (!title || !description || !techStack || !stage) {
+    const { title, description, techStack, stage, authorId } = body;
+
+    if (!title || !description || !techStack || !stage || !authorId) {
       return NextResponse.json(
         { success: false, error: "Missing fields" },
         { status: 400 },
       );
     }
 
-    // Create a new mock project
     const newProject: Project = {
       id: "p" + Date.now(),
-      authorId: "1", // Hardcoded to Robert Fox (our mock logged-in user)
+      authorId,
       title,
       description,
-      // Split the comma-separated string into an array
       techStack: techStack.split(",").map((t: string) => t.trim()),
       stage: stage as "Idea" | "MVP" | "Production",
       createdAt: "Just now",
       bookmarkCount: 0,
     };
 
-    // Add to the TOP of the mock database
     mockProjects.unshift(newProject);
 
     return NextResponse.json({

@@ -10,31 +10,40 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { mockUsers, Project } from "@/lib/mock-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { CollaborationRequestModal } from "@/components/shared/collab-request-modal";
 import { Bookmark, MessageCircle, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { toast } from "@/hooks/use-toast";
+import { Project, User } from "@/types/models";
+
+interface ProjectWithAuthor extends Project {
+  author?: User;
+}
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectWithAuthor;
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const author = mockUsers.find((u) => u.id === project.authorId);
   const { bookmarkedIds, toggleBookmark } = useBookmarks();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const author = project.author;
+
   if (!author) return null;
+
   const isBookmarked = bookmarkedIds.includes(project.id);
 
   const handleGuestClick = (action: string) => {
     if (!isAuthenticated) {
-      toast({ title: `Please login to ${action.toLowerCase()}`, type: "info" });
+      toast({
+        title: `Please login to ${action.toLowerCase()}`,
+        type: "info",
+      });
     }
   };
 
@@ -49,15 +58,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 {author.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
+
             <div>
               <p className="text-sm font-semibold text-foreground">
                 {author.name}
               </p>
+
               <p className="text-xs text-muted-foreground">
                 {author.profession || "Developer"}
               </p>
             </div>
           </div>
+
           <div className="flex items-center gap-2">
             <Badge
               variant="outline"
@@ -65,6 +77,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             >
               {project.stage}
             </Badge>
+
             <Button
               variant="ghost"
               size="icon"
@@ -79,6 +92,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <h3 className="text-base font-semibold text-foreground">
             {project.title}
           </h3>
+
           <p className="text-sm leading-relaxed text-muted-foreground">
             {project.description}
           </p>
@@ -103,7 +117,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
             className="gap-2 text-muted-foreground hover:text-foreground"
             onClick={() => {
               handleGuestClick("collaborate");
-              if (isAuthenticated) setIsModalOpen(true);
+
+              if (isAuthenticated) {
+                setIsModalOpen(true);
+              }
             }}
           >
             <MessageCircle className="h-4 w-4" />
@@ -121,12 +138,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
             )}
             onClick={() => {
               handleGuestClick("bookmark");
-              if (isAuthenticated) toggleBookmark(project.id);
+
+              if (isAuthenticated) {
+                toggleBookmark(project.id);
+              }
             }}
           >
             <Bookmark
               className={cn("h-4 w-4", isBookmarked && "fill-current")}
             />
+
             {project.bookmarkCount + (isBookmarked ? 1 : 0)}
           </Button>
 

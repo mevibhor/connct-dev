@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-
+import { useAuthStore } from "@/stores/use-auth-store";
 import { useCreateProjectStore } from "@/stores/use-create-project-store";
 
 import {
@@ -40,6 +40,8 @@ export function CreateProjectModal({
 }: CreateProjectModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
+
   const {
     step,
     setStep,
@@ -84,6 +86,7 @@ export function CreateProjectModal({
         description,
         techStack: data.techStack,
         stage: data.stage,
+        authorId: user?.id,
       };
 
       const response = await fetch("/api/projects", {
@@ -97,6 +100,11 @@ export function CreateProjectModal({
       if (result.success) {
         toast({ title: "Project posted successfully!", type: "success" });
         queryClient.invalidateQueries({ queryKey: ["projects"] });
+        if (user?.id) {
+          queryClient.invalidateQueries({
+            queryKey: ["profile", user.id],
+          });
+        }
 
         resetForm();
         step1Form.reset();
