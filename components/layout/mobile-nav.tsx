@@ -23,7 +23,7 @@ export function MobileNav() {
 
   // ✅ Dynamically get the current user's ID for the profile link
   const currentUser = useAuthStore((state) => state.user);
-  const profileHref = currentUser ? `/profile/${currentUser.id}` : "/profile/1";
+  const profileHref = currentUser ? `/profile/${currentUser.id}` : "/login";
 
   const handleComingSoon = (label: string) => {
     toast({ title: `${label} coming soon`, type: "info" });
